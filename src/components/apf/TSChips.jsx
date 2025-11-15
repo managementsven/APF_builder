@@ -85,13 +85,13 @@ export default function TSChips({ selectedTs, setSelectedTs, tsSearch, denseMode
   };
 
   return (
-    <div className={`${denseMode ? 'mt-2' : 'mt-3'}`}>
-      <div className={`flex gap-2 ${denseMode ? 'mb-2' : 'mb-3'}`}>
+    <div className={`${denseMode ? 'mt-1.5' : 'mt-2'}`}>
+      <div className={`flex gap-1.5 ${denseMode ? 'mb-1.5' : 'mb-2'}`}>
         <Button
           variant="outline"
           size="sm"
           onClick={handleSelectAll}
-          className={`${denseMode ? 'h-7 px-2 text-[11px]' : 'h-8 px-3 text-xs'} bg-[#1a1d23] border-gray-600 hover:bg-gray-700`}
+          className={`${denseMode ? 'h-6 px-2 text-[10px]' : 'h-7 px-2.5 text-[11px]'} bg-white/5 border-white/10 hover:bg-white/10 backdrop-blur-sm font-medium`}
         >
           Alle auswählen
         </Button>
@@ -99,13 +99,13 @@ export default function TSChips({ selectedTs, setSelectedTs, tsSearch, denseMode
           variant="outline"
           size="sm"
           onClick={handleDeselectAll}
-          className={`${denseMode ? 'h-7 px-2 text-[11px]' : 'h-8 px-3 text-xs'} bg-[#1a1d23] border-gray-600 hover:bg-gray-700`}
+          className={`${denseMode ? 'h-6 px-2 text-[10px]' : 'h-7 px-2.5 text-[11px]'} bg-white/5 border-white/10 hover:bg-white/10 backdrop-blur-sm font-medium`}
         >
           Alle abwählen
         </Button>
       </div>
 
-      <div className={`grid grid-cols-2 sm:grid-cols-3 ${denseMode ? 'gap-1.5' : 'gap-2'} max-h-[400px] overflow-y-auto pr-2`}>
+      <div className={`grid grid-cols-2 sm:grid-cols-3 ${denseMode ? 'gap-1' : 'gap-1.5'} max-h-[350px] overflow-y-auto pr-1`}>
         {filteredOptions.map(option => (
           <Button
             key={option}
@@ -116,11 +116,11 @@ export default function TSChips({ selectedTs, setSelectedTs, tsSearch, denseMode
             aria-pressed={selectedTs.has(option)}
             title={option}
             className={`
-              ${denseMode ? 'h-7 px-2 text-[11px]' : 'h-8 px-3 text-xs'}
-              border-gray-600 hover:bg-gray-700 transition-all text-left justify-start
+              ${denseMode ? 'h-6 px-1.5 text-[10px]' : 'h-7 px-2 text-[11px]'}
+              border-white/10 hover:bg-white/10 transition-all text-left justify-start backdrop-blur-sm font-medium
               ${selectedTs.has(option)
-                ? 'bg-[#E1251B] border-[#E1251B] text-white hover:bg-[#c51f17]'
-                : 'bg-[#1a1d23]'
+                ? 'bg-gradient-to-r from-[#E1251B] to-[#c51f17] border-[#E1251B] text-white hover:from-[#c51f17] hover:to-[#a01915] shadow-lg shadow-[#E1251B]/30'
+                : 'bg-white/5'
               }
             `}
           >
@@ -130,7 +130,7 @@ export default function TSChips({ selectedTs, setSelectedTs, tsSearch, denseMode
       </div>
 
       {filteredOptions.length === 0 && (
-        <div className="text-center text-gray-500 text-sm py-4">
+        <div className="text-center text-gray-500 text-xs py-3">
           Keine TS-Optionen gefunden
         </div>
       )}

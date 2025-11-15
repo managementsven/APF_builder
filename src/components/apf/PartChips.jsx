@@ -70,9 +70,6 @@ export default function PartChips({ partOrder, setPartOrder, denseMode }) {
             delete map[part.key];
           }
         }
-      } else {
-        // For non-prompt parts, single click does nothing if already present
-        // Double-click will remove (handled separately)
       }
     } else {
       // Part doesn't exist - add it
@@ -106,8 +103,8 @@ export default function PartChips({ partOrder, setPartOrder, denseMode }) {
   };
 
   return (
-    <div className={`${denseMode ? 'mt-2' : 'mt-3'}`}>
-      <div className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 ${denseMode ? 'gap-1.5' : 'gap-2'}`}>
+    <div className={`${denseMode ? 'mt-1.5' : 'mt-2'}`}>
+      <div className={`grid grid-cols-3 sm:grid-cols-4 ${denseMode ? 'gap-1' : 'gap-1.5'}`}>
         {PARTS.map(part => (
           <Button
             key={part.key}
@@ -119,11 +116,11 @@ export default function PartChips({ partOrder, setPartOrder, denseMode }) {
             aria-pressed={isSelected(part.key)}
             title={part.label}
             className={`
-              ${denseMode ? 'h-7 px-2 text-[11px]' : 'h-8 px-3 text-xs'}
-              border-gray-600 hover:bg-gray-700 transition-all
+              ${denseMode ? 'h-6 px-1.5 text-[10px]' : 'h-7 px-2 text-[11px]'}
+              border-white/10 hover:bg-white/10 transition-all backdrop-blur-sm font-medium
               ${isSelected(part.key) 
-                ? 'bg-[#E1251B] border-[#E1251B] text-white hover:bg-[#c51f17]' 
-                : 'bg-[#1a1d23]'
+                ? 'bg-gradient-to-r from-[#E1251B] to-[#c51f17] border-[#E1251B] text-white hover:from-[#c51f17] hover:to-[#a01915] shadow-lg shadow-[#E1251B]/30' 
+                : 'bg-white/5'
               }
             `}
           >

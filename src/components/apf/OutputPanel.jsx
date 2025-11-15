@@ -34,18 +34,18 @@ export default function OutputPanel({ output, onGenerate, denseMode }) {
   };
 
   return (
-    <div className={`bg-[#252830] rounded-lg border border-gray-700 ${denseMode ? 'p-3' : 'p-5'}`}>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className={`font-semibold text-[#E1251B] ${denseMode ? 'text-base' : 'text-lg'}`}>
-          Output
+    <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl ${denseMode ? 'p-3' : 'p-4'}`}>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className={`font-bold text-[#E1251B] ${denseMode ? 'text-sm' : 'text-base'} tracking-wide`}>
+          OUTPUT
         </h2>
-        <div className="flex gap-2">
+        <div className="flex gap-1.5">
           <Button
             onClick={onGenerate}
             size="sm"
-            className={`bg-[#E1251B] hover:bg-[#c51f17] text-white ${denseMode ? 'h-7 px-3 text-xs' : 'h-8 px-4 text-sm'}`}
+            className={`bg-gradient-to-r from-[#E1251B] to-[#c51f17] hover:from-[#c51f17] hover:to-[#a01915] text-white ${denseMode ? 'h-7 px-2.5 text-[11px]' : 'h-8 px-3 text-xs'} shadow-lg shadow-[#E1251B]/30 font-medium`}
           >
-            <FileText className={`${denseMode ? 'w-3 h-3' : 'w-4 h-4'} mr-1.5`} />
+            <FileText className={`${denseMode ? 'w-3 h-3' : 'w-3.5 h-3.5'} mr-1`} />
             Generieren
           </Button>
           <Button
@@ -53,9 +53,9 @@ export default function OutputPanel({ output, onGenerate, denseMode }) {
             disabled={!output}
             variant="outline"
             size="sm"
-            className={`border-gray-600 hover:bg-gray-700 ${denseMode ? 'h-7 px-3 text-xs' : 'h-8 px-4 text-sm'}`}
+            className={`border-white/10 hover:bg-white/10 backdrop-blur-sm ${denseMode ? 'h-7 px-2.5 text-[11px]' : 'h-8 px-3 text-xs'} font-medium`}
           >
-            <Copy className={`${denseMode ? 'w-3 h-3' : 'w-4 h-4'} mr-1.5`} />
+            <Copy className={`${denseMode ? 'w-3 h-3' : 'w-3.5 h-3.5'} mr-1`} />
             {copySuccess ? 'Copied' : 'Kopieren'}
           </Button>
           <Button
@@ -63,31 +63,33 @@ export default function OutputPanel({ output, onGenerate, denseMode }) {
             disabled={!output}
             variant="outline"
             size="sm"
-            className={`border-gray-600 hover:bg-gray-700 ${denseMode ? 'h-7 px-3 text-xs' : 'h-8 px-4 text-sm'}`}
+            className={`border-white/10 hover:bg-white/10 backdrop-blur-sm ${denseMode ? 'h-7 px-2.5 text-[11px]' : 'h-8 px-3 text-xs'} font-medium`}
           >
-            <Download className={`${denseMode ? 'w-3 h-3' : 'w-4 h-4'} mr-1.5`} />
-            Als .txt herunterladen
+            <Download className={`${denseMode ? 'w-3 h-3' : 'w-3.5 h-3.5'} mr-1`} />
+            .txt
           </Button>
         </div>
       </div>
 
       {copySuccess && (
-        <div className="mb-2 text-green-400 text-xs text-right animate-pulse">
-          Copied to clipboard!
+        <div className="mb-2 text-green-400 text-[10px] text-right animate-pulse font-medium">
+          ✓ Copied to clipboard!
         </div>
       )}
 
       <pre 
         className={`
-          bg-[#1a1d23] 
-          border border-gray-600 
-          rounded 
-          ${denseMode ? 'p-2' : 'p-4'}
-          ${denseMode ? 'min-h-[300px]' : 'min-h-[400px]'}
+          bg-black/40 
+          border border-white/10 
+          rounded-lg
+          backdrop-blur-sm
+          ${denseMode ? 'p-2.5' : 'p-3'}
+          ${denseMode ? 'min-h-[280px]' : 'min-h-[350px]'}
           overflow-auto 
           whitespace-pre-wrap 
           break-words
           output-text
+          shadow-inner
         `}
         style={{
           fontFamily: 'Arial, sans-serif',
