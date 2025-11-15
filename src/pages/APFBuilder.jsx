@@ -180,9 +180,9 @@ Generated on: ${date} at ${time}
 
       {/* Main Content */}
       <div className="max-w-[1600px] mx-auto px-4 py-4 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 items-start">
           {/* Column 1: Allgemein */}
-          <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl ${denseMode ? 'p-2.5' : 'p-3'}`}>
+          <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl transition-all duration-300 ${denseMode ? 'p-2.5' : 'p-3'} ${!allgemeinExpanded ? 'h-auto' : ''}`}>
             <SectionHeader 
               title="ALLGEMEIN" 
               expanded={allgemeinExpanded} 
@@ -266,7 +266,7 @@ Generated on: ${date} at ${time}
           </div>
 
           {/* Column 2: WO / Symptom */}
-          <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl ${denseMode ? 'p-2.5' : 'p-3'}`}>
+          <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl transition-all duration-300 ${denseMode ? 'p-2.5' : 'p-3'} ${!woSymptomExpanded ? 'h-auto' : ''}`}>
             <SectionHeader 
               title="WO / SYMPTOM" 
               expanded={woSymptomExpanded} 
@@ -366,7 +366,7 @@ Generated on: ${date} at ${time}
           </div>
 
           {/* Column 3: CE On-Site TS */}
-          <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl ${denseMode ? 'p-2.5' : 'p-3'}`}>
+          <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl transition-all duration-300 ${denseMode ? 'p-2.5' : 'p-3'} ${!ceOnSiteExpanded ? 'h-auto' : ''}`}>
             <SectionHeader 
               title="CE ON-SITE TS" 
               expanded={ceOnSiteExpanded} 
