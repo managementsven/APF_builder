@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -18,6 +18,7 @@ export default function APFBuilder() {
   const [allgemeinExpanded, setAllgemeinExpanded] = useState(true);
   const [woSymptomExpanded, setWoSymptomExpanded] = useState(true);
   const [ceOnSiteExpanded, setCeOnSiteExpanded] = useState(true);
+  const [premierExpanded, setPremierExpanded] = useState(true);
 
   // Allgemein fields
   const [caseId, setCaseId] = useState('');
@@ -44,8 +45,20 @@ export default function APFBuilder() {
   const [tsExpanded, setTsExpanded] = useState(false);
   const [additionalTsDetails, setAdditionalTsDetails] = useState('');
 
+  // Premier Support fields
+  const [modelDescription, setModelDescription] = useState('');
+  const [sporadicAllParts, setSporadicAllParts] = useState(false);
+  const [sporadicNote, setSporadicNote] = useState('');
+  const [moreThan4Parts, setMoreThan4Parts] = useState(false);
+  const [whyMoreThan4, setWhyMoreThan4] = useState('');
+
   // Output
   const [output, setOutput] = useState('');
+
+  // Show/hide logic for whyMoreThan4 field
+  useEffect(() => {
+    // This handles the conditional display
+  }, [moreThan4Parts]);
 
   const handleReset = () => {
     setCaseId('');
@@ -67,6 +80,12 @@ export default function APFBuilder() {
     setSelectedTs(new Set());
     setTsExpanded(false);
     setAdditionalTsDetails('');
+    // Reset Premier fields
+    setModelDescription('');
+    setSporadicAllParts(false);
+    setSporadicNote('');
+    setMoreThan4Parts(false);
+    setWhyMoreThan4('');
     setOutput('');
   };
 
@@ -93,7 +112,7 @@ export default function APFBuilder() {
       ? '\n[] CE did not pick up parts within 5 days -parts returned (set repeat repair reason to OTHER/UNKNOWN)\n' 
       : '';
 
-    const outputText = `Case ID :${caseId}
+    const mainOutput = `Case ID :${caseId}
 APFCreator: ${apfCreator}
 
 **** ACTION PLAN ${actionPlan} ****
@@ -121,6 +140,51 @@ ${partOrder}
 Generated on: ${date} at ${time}
 --- Ende ---`;
 
+    // Build Premier Support block
+    const repeatRepairYes = actionPlan === 'FAILED' ? '[x]' : '[]';
+    const repeatRepairNo = actionPlan === 'FAILED' ? '[]' : '[x]';
+    const sporadicMark = sporadicAllParts ? '[x]' : '[]';
+    const tsListCommaSeparated = Array.from(selectedTs).join(', ');
+
+    const premierBlock = `
+
+=========================================
+*Premier - Support*
+=========================================
+Model description: ${modelDescription}
+Repeat Repair: Yes${repeatRepairYes}  No${repeatRepairNo}
+Sporadic problem, replace ALL ordered parts under all circumstances ${sporadicMark}
+NOTE for sporadic problem: ${sporadicNote}
+=========================================
+DETAILED PROBLEM DESCRIPTION: ${newSymptom}
+=========================================
+ALREADY PERFORMED TROUBLESHOOTING:  ${tsListCommaSeparated}
+=========================================
+PART NAME:
+${partOrder}
+=========================================
+WO INITIATOR: ${apfCreator}`;
+
+    // Build >4 parts justification block if needed
+    let moreThan4Block = '';
+    const partLines = partOrder.split('\n').filter(line => line.trim());
+    if (moreThan4Parts && partLines.length > 4) {
+      // Extract part names (left side of " - ")
+      const partNames = partLines.map(line => {
+        const idx = line.indexOf(' - ');
+        return idx > 0 ? line.substring(0, idx).trim() : line.trim();
+      });
+
+      moreThan4Block = `
+
+Parts needed:
+${partNames.join('\n')}
+
+Why are more than 4 parts needed:
+${whyMoreThan4}`;
+    }
+
+    const outputText = mainOutput + premierBlock + moreThan4Block;
     setOutput(outputText);
   };
 
@@ -426,6 +490,86 @@ Generated on: ${date} at ${time}
                     className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'min-h-[50px] text-xs' : 'min-h-[60px] text-sm'} focus:border-[#E1251B] transition-all`}
                   />
                 </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Premier Support Section - Full Width */}
+        <div className="mt-3">
+          <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl transition-all duration-300 ${denseMode ? 'p-2.5' : 'p-3'}`}>
+            <SectionHeader 
+              title="PREMIER - SUPPORT TEMPLATE" 
+              expanded={premierExpanded} 
+              setExpanded={setPremierExpanded}
+            />
+            {premierExpanded && (
+              <div className={`pt-1 space-y-${denseMode ? '1.5' : '2'}`}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">Model description</Label>
+                    <Input
+                      id="modelDescription"
+                      value={modelDescription}
+                      onChange={(e) => setModelDescription(e.target.value)}
+                      placeholder="e.g. T14s G3"
+                      className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all`}
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">Options</Label>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <Checkbox
+                          id="sporadicAllParts"
+                          checked={sporadicAllParts}
+                          onCheckedChange={setSporadicAllParts}
+                          className="border-gray-500 mt-0.5 data-[state=checked]:bg-[#E1251B] data-[state=checked]:border-[#E1251B]"
+                        />
+                        <Label htmlFor="sporadicAllParts" className="text-[10px] leading-tight cursor-pointer text-gray-300">
+                          Sporadic problem, replace ALL ordered parts under all circumstances
+                        </Label>
+                      </div>
+
+                      <div className="flex items-start gap-2">
+                        <Checkbox
+                          id="moreThan4Parts"
+                          checked={moreThan4Parts}
+                          onCheckedChange={setMoreThan4Parts}
+                          className="border-gray-500 mt-0.5 data-[state=checked]:bg-[#E1251B] data-[state=checked]:border-[#E1251B]"
+                        />
+                        <Label htmlFor="moreThan4Parts" className="text-[10px] leading-tight cursor-pointer text-gray-300">
+                          Add '&gt;4 parts' justification block
+                        </Label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">NOTE for sporadic problem</Label>
+                  <Textarea
+                    id="sporadicNote"
+                    value={sporadicNote}
+                    onChange={(e) => setSporadicNote(e.target.value)}
+                    placeholder="Optional note..."
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'min-h-[40px] text-xs' : 'min-h-[50px] text-sm'} focus:border-[#E1251B] transition-all`}
+                  />
+                </div>
+
+                {moreThan4Parts && (
+                  <div id="whyMoreThan4Wrap">
+                    <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">Why are more than 4 parts needed</Label>
+                    <Textarea
+                      id="whyMoreThan4"
+                      value={whyMoreThan4}
+                      onChange={(e) => setWhyMoreThan4(e.target.value)}
+                      placeholder="Reason for more than 4 parts"
+                      className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'min-h-[40px] text-xs' : 'min-h-[50px] text-sm'} focus:border-[#E1251B] transition-all`}
+                    />
+                  </div>
+                )}
               </div>
             )}
           </div>
