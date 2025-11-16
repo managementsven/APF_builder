@@ -218,9 +218,9 @@ ${whyMoreThan4}`;
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2.5">
               <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6918520f2d38836a5df81c78/f074bb82b_apf_logo_badge_dark.jpg"
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6918520f2d38836a5df81c78/ce88ba337_apf_builder_logo_light_1024.png"
                 alt="APF Builder"
-                className="h-10 object-contain"
+                className="h-8 object-contain"
               />
             </div>
           </div>

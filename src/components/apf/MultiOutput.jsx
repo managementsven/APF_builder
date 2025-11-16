@@ -40,7 +40,7 @@ function OutputPane({ title, content, onClear, denseMode, show = true }) {
   const charCount = content ? content.length : 0;
 
   return (
-    <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl transition-all duration-300 ${denseMode ? 'p-2.5' : 'p-3'} clay-panel`}>
+    <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl transition-all duration-300 ${denseMode ? 'p-2.5' : 'p-3'} clay-panel flex flex-col h-full`}>
       <button
         onClick={() => setExpanded(!expanded)}
         className={`w-full flex items-center justify-between font-bold text-[#E1251B] ${denseMode ? 'text-xs py-1.5' : 'text-sm py-2'} tracking-wide hover:opacity-80 transition-opacity`}
@@ -95,7 +95,7 @@ function OutputPane({ title, content, onClear, denseMode, show = true }) {
               rounded-lg
               backdrop-blur-sm
               ${denseMode ? 'p-2.5' : 'p-3'}
-              max-h-[400px]
+              flex-1
               overflow-auto 
               whitespace-pre-wrap 
               break-words
@@ -106,6 +106,7 @@ function OutputPane({ title, content, onClear, denseMode, show = true }) {
               fontFamily: 'Arial, "Segoe UI", Tahoma, sans-serif',
               fontSize: '11pt',
               lineHeight: '1.3',
+              minHeight: '350px',
             }}
           >
             {content || `Click "Generate" to create ${title.toLowerCase()}...`}
@@ -134,7 +135,7 @@ export default function MultiOutput({ outputs, onGenerate, onClearPane, denseMod
         </Button>
       </div>
 
-      <div className={`grid ${visibleOutputsCount === 3 ? 'grid-cols-1 xl:grid-cols-3' : 'grid-cols-1 lg:grid-cols-2'} gap-3 items-start`}>
+      <div className={`grid ${visibleOutputsCount === 3 ? 'grid-cols-1 xl:grid-cols-3' : 'grid-cols-1 lg:grid-cols-2'} gap-3 items-stretch`}>
         <OutputPane
           title="APF OUTPUT"
           content={outputs.apf}
