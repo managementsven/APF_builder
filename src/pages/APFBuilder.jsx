@@ -196,10 +196,10 @@ ${whyMoreThan4}`;
   const SectionHeader = ({ title, expanded, setExpanded }) => (
     <button
       onClick={() => setExpanded(!expanded)}
-      className={`w-full flex items-center justify-between font-bold text-[#E1251B] ${denseMode ? 'text-sm py-2' : 'text-base py-2.5'} tracking-wide hover:opacity-80 transition-opacity`}
+      className={`w-full flex items-center justify-between font-bold text-[#E1251B] ${denseMode ? 'text-sm py-2' : 'text-base py-2.5'} tracking-wide hover:opacity-80 transition-all`}
     >
       <span>{title}</span>
-      {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+      {expanded ? <ChevronUp className="w-4 h-4 transition-transform duration-300" /> : <ChevronDown className="w-4 h-4 transition-transform duration-300" />}
     </button>
   );
 
@@ -249,39 +249,40 @@ ${whyMoreThan4}`;
 
       {/* Main Content */}
       <div className="max-w-[1600px] mx-auto px-4 py-4 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 items-start">
-          {/* Column 1: Allgemein */}
-          <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl transition-all duration-300 ${denseMode ? 'p-2.5' : 'p-3'} clay-panel`}>
+        {/* Three Main Sections - IDENTICAL LAYOUT */}
+        <div className="sections-grid">
+          {/* Section 1: ALLGEMEIN */}
+          <div className="sectionBox">
             <SectionHeader 
               title="ALLGEMEIN" 
               expanded={allgemeinExpanded} 
               setExpanded={setAllgemeinExpanded}
             />
             {allgemeinExpanded && (
-              <div className={`space-y-${denseMode ? '1.5' : '2'} pt-1`}>
+              <div className="sectionContent">
                 <div>
-                  <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">Case ID</Label>
+                  <Label className="fieldLabel">Case ID</Label>
                   <Input
                     value={caseId}
                     onChange={(e) => setCaseId(e.target.value)}
                     placeholder="z. B. 2027910571"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className="fieldInput"
                   />
                 </div>
 
                 <div>
-                  <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">APFCreator</Label>
+                  <Label className="fieldLabel">APFCreator</Label>
                   <Input
                     value={apfCreator}
                     onChange={(e) => setApfCreator(e.target.value)}
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className="fieldInput"
                   />
                 </div>
 
                 <div>
-                  <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">Action Plan</Label>
+                  <Label className="fieldLabel">Action Plan</Label>
                   <Select value={actionPlan} onValueChange={setActionPlan}>
-                    <SelectTrigger className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} clay-input`}>
+                    <SelectTrigger className="fieldInput">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-[#2a2d3a] border-white/30">
@@ -293,9 +294,9 @@ ${whyMoreThan4}`;
                 </div>
 
                 <div>
-                  <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">CE Called In</Label>
+                  <Label className="fieldLabel">CE Called In</Label>
                   <Select value={ceCalledIn} onValueChange={setCeCalledIn}>
-                    <SelectTrigger className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} clay-input`}>
+                    <SelectTrigger className="fieldInput">
                       <SelectValue placeholder="Select..." />
                     </SelectTrigger>
                     <SelectContent className="bg-[#2a2d3a] border-white/30">
@@ -307,9 +308,9 @@ ${whyMoreThan4}`;
                 </div>
 
                 <div>
-                  <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">Min-conf</Label>
+                  <Label className="fieldLabel">Min-conf</Label>
                   <Select value={minConf} onValueChange={setMinConf}>
-                    <SelectTrigger className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} clay-input`}>
+                    <SelectTrigger className="fieldInput">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-[#2a2d3a] border-white/30">
@@ -326,7 +327,7 @@ ${whyMoreThan4}`;
                     onCheckedChange={setPartsNotPickedUp}
                     className="border-gray-500 mt-0.5 data-[state=checked]:bg-[#E1251B] data-[state=checked]:border-[#E1251B]"
                   />
-                  <Label htmlFor="parts-pickup" className={`text-[10px] leading-tight cursor-pointer text-gray-300`}>
+                  <Label htmlFor="parts-pickup" className="text-[10px] leading-tight cursor-pointer text-gray-300">
                     CE did not pick up parts within 5 days – parts returned
                   </Label>
                 </div>
@@ -334,90 +335,88 @@ ${whyMoreThan4}`;
             )}
           </div>
 
-          {/* Column 2: WO / Symptom */}
-          <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl transition-all duration-300 ${denseMode ? 'p-2.5' : 'p-3'} clay-panel`}>
+          {/* Section 2: WO / SYMPTOM */}
+          <div className="sectionBox">
             <SectionHeader 
               title="WO / SYMPTOM" 
               expanded={woSymptomExpanded} 
               setExpanded={setWoSymptomExpanded}
             />
             {woSymptomExpanded && (
-              <div className={`space-y-${denseMode ? '1.5' : '2'} pt-1`}>
+              <div className="sectionContent">
                 <div>
-                  <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">CE Name/Phone</Label>
+                  <Label className="fieldLabel">CE Name/Phone</Label>
                   <Input
                     value={ceNamePhone}
                     onChange={(e) => setCeNamePhone(e.target.value)}
                     placeholder="CE name and phone number"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className="fieldInput"
                   />
                 </div>
 
                 <div>
-                  <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">Previous WO Problem</Label>
+                  <Label className="fieldLabel">Previous WO Problem</Label>
                   <Input
                     value={prevWoProblem}
                     onChange={(e) => setPrevWoProblem(e.target.value)}
                     placeholder="Previous WO problem (short)"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className="fieldInput"
                   />
                 </div>
 
                 <div>
-                  <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">Previous WO Action</Label>
+                  <Label className="fieldLabel">Previous WO Action</Label>
                   <Input
                     value={prevWoAction}
                     onChange={(e) => setPrevWoAction(e.target.value)}
                     placeholder="Actions performed in previous WO"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className="fieldInput"
                   />
                 </div>
 
                 <div>
-                  <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">New Symptom</Label>
+                  <Label className="fieldLabel">New Symptom</Label>
                   <Textarea
                     value={newSymptom}
                     onChange={(e) => setNewSymptom(e.target.value)}
                     placeholder="New symptom description"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'min-h-[45px] text-xs' : 'min-h-[55px] text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className="fieldInput fieldTextarea"
                   />
                 </div>
 
                 <div>
-                  <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">Cause for new symptom</Label>
+                  <Label className="fieldLabel">Cause for new symptom</Label>
                   <Textarea
                     value={causeNewSymptom}
                     onChange={(e) => setCauseNewSymptom(e.target.value)}
                     placeholder="Your assessment of the cause"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'min-h-[45px] text-xs' : 'min-h-[55px] text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className="fieldInput fieldTextarea"
                   />
                 </div>
 
                 <div>
-                  <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">Next action</Label>
+                  <Label className="fieldLabel">Next action</Label>
                   <Input
                     value={nextAction}
                     onChange={(e) => setNextAction(e.target.value)}
                     placeholder="Planned next step"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className="fieldInput"
                   />
                 </div>
 
                 <div>
-                  <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">
-                    Part order
-                  </Label>
+                  <Label className="fieldLabel">Part order</Label>
                   <Textarea
                     value={partOrder}
                     onChange={(e) => setPartOrder(e.target.value)}
                     placeholder="z. B. Cover - 5M11Q55940"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white font-mono ${denseMode ? 'min-h-[50px] text-[10px]' : 'min-h-[60px] text-xs'} focus:border-[#E1251B] transition-all clay-input`}
+                    className="fieldInput fieldTextarea font-mono"
                   />
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setPartsExpanded(!partsExpanded)}
-                    className={`mt-1.5 text-[10px] bg-white/10 border border-white/20 hover:bg-white/20 text-white backdrop-blur-sm font-semibold ${denseMode ? 'h-6 px-2' : 'h-7 px-2.5'} clay-button`}
+                    className="mt-1.5 text-[10px] bg-white/10 border border-white/20 hover:bg-white/20 text-white backdrop-blur-sm font-semibold h-7 px-2.5 clay-button"
                   >
                     Part-Optionen {partsExpanded ? '▲' : '▼'}
                   </Button>
@@ -434,19 +433,19 @@ ${whyMoreThan4}`;
             )}
           </div>
 
-          {/* Column 3: CE On-Site TS */}
-          <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl transition-all duration-300 ${denseMode ? 'p-2.5' : 'p-3'} clay-panel`}>
+          {/* Section 3: CE ON-SITE TS */}
+          <div className="sectionBox">
             <SectionHeader 
               title="CE ON-SITE TS" 
               expanded={ceOnSiteExpanded} 
               setExpanded={setCeOnSiteExpanded}
             />
             {ceOnSiteExpanded && (
-              <div className={`space-y-${denseMode ? '1.5' : '2'} pt-1`}>
+              <div className="sectionContent">
                 <div>
-                  <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">Min-conf</Label>
+                  <Label className="fieldLabel">Min-conf</Label>
                   <Select value={minConfTs} onValueChange={setMinConfTs}>
-                    <SelectTrigger className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} clay-input`}>
+                    <SelectTrigger className="fieldInput">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-[#2a2d3a] border-white/30">
@@ -457,12 +456,12 @@ ${whyMoreThan4}`;
                 </div>
 
                 <div>
-                  <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">TS-Suche</Label>
+                  <Label className="fieldLabel">TS-Suche</Label>
                   <Input
                     value={tsSearch}
                     onChange={(e) => setTsSearch(e.target.value)}
                     placeholder="z. B. RAM, SSD, Battery…"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className="fieldInput"
                   />
                 </div>
 
@@ -470,7 +469,7 @@ ${whyMoreThan4}`;
                   variant="ghost"
                   size="sm"
                   onClick={() => setTsExpanded(!tsExpanded)}
-                  className={`text-[10px] bg-white/10 border border-white/20 hover:bg-white/20 text-white backdrop-blur-sm font-semibold ${denseMode ? 'h-6 px-2' : 'h-7 px-2.5'} clay-button`}
+                  className="text-[10px] bg-white/10 border border-white/20 hover:bg-white/20 text-white backdrop-blur-sm font-semibold h-7 px-2.5 clay-button w-full"
                 >
                   TS-Optionen {tsExpanded ? '▲' : '▼'}
                 </Button>
@@ -485,14 +484,12 @@ ${whyMoreThan4}`;
                 )}
 
                 <div>
-                  <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">
-                    Weitere TS-Details
-                  </Label>
+                  <Label className="fieldLabel">Weitere TS-Details</Label>
                   <Textarea
                     value={additionalTsDetails}
                     onChange={(e) => setAdditionalTsDetails(e.target.value)}
                     placeholder="Optional: zusätzliche Details..."
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'min-h-[50px] text-xs' : 'min-h-[60px] text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className="fieldInput fieldTextarea"
                   />
                 </div>
               </div>
@@ -592,6 +589,103 @@ ${whyMoreThan4}`;
       </div>
 
       <style jsx>{`
+        /* ========== UNIFIED SECTIONS GRID ========== */
+        .sections-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 14px;
+          margin-bottom: 14px;
+        }
+        
+        @media (max-width: 1100px) {
+          .sections-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+        
+        /* ========== UNIFIED SECTION BOX ========== */
+        .sectionBox {
+          backdrop-filter: blur(20px);
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 12px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.4),
+            inset 2px 2px 4px rgba(255, 255, 255, 0.03),
+            inset -2px -2px 4px rgba(0, 0, 0, 0.3);
+          padding: ${denseMode ? '10px' : '12px'};
+          transition: all 0.3s ease;
+          min-height: 200px;
+          display: flex;
+          flex-direction: column;
+        }
+        
+        .sectionBox:hover {
+          box-shadow: 
+            0 12px 40px rgba(0, 0, 0, 0.5),
+            inset 2px 2px 4px rgba(255, 255, 255, 0.04),
+            inset -2px -2px 4px rgba(0, 0, 0, 0.35);
+        }
+        
+        /* ========== UNIFIED SECTION CONTENT ========== */
+        .sectionContent {
+          display: flex;
+          flex-direction: column;
+          gap: ${denseMode ? '10px' : '12px'};
+          padding-top: 8px;
+          animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        /* ========== UNIFIED FIELD LABELS ========== */
+        .fieldLabel {
+          font-size: 10px;
+          margin-bottom: 4px;
+          display: block;
+          color: rgba(156, 163, 175, 1);
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          font-weight: 500;
+        }
+        
+        /* ========== UNIFIED FIELD INPUTS ========== */
+        .fieldInput {
+          background: rgba(0, 0, 0, 0.3);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(8px);
+          color: white;
+          height: ${denseMode ? '28px' : '32px'};
+          font-size: ${denseMode ? '12px' : '14px'};
+          transition: all 0.2s ease;
+          border-radius: 6px;
+          padding: 0 12px;
+        }
+        
+        .fieldInput:focus {
+          border-color: #E1251B;
+          box-shadow: 
+            inset 1px 1px 2px rgba(0, 0, 0, 0.4),
+            0 0 0 2px rgba(225, 37, 27, 0.2);
+          outline: none;
+        }
+        
+        .fieldTextarea {
+          min-height: ${denseMode ? '45px' : '55px'};
+          padding: 8px 12px;
+          resize: vertical;
+        }
+        
+        /* ========== DENSE MODE ADJUSTMENTS ========== */
         .dense .space-y-2\.5 > * + * {
           margin-top: 0.375rem;
         }
@@ -602,7 +696,7 @@ ${whyMoreThan4}`;
           margin-top: 0.25rem;
         }
         
-        /* Claymorphism effects */
+        /* ========== CLAYMORPHISM EFFECTS ========== */
         .clay-panel {
           box-shadow: 
             inset 2px 2px 4px rgba(255, 255, 255, 0.03),
