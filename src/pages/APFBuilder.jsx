@@ -239,7 +239,7 @@ ${whyMoreThan4}`;
               variant="outline" 
               size="sm"
               onClick={handleReset}
-              className="bg-white/5 border-white/10 hover:bg-white/10 backdrop-blur-sm text-xs h-8 clay-button"
+              className="bg-white/10 border-white/20 hover:bg-white/20 text-white backdrop-blur-sm text-xs h-8 font-semibold clay-button"
             >
               Reset
             </Button>
@@ -265,7 +265,7 @@ ${whyMoreThan4}`;
                     value={caseId}
                     onChange={(e) => setCaseId(e.target.value)}
                     placeholder="z. B. 2027910571"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
 
@@ -274,20 +274,20 @@ ${whyMoreThan4}`;
                   <Input
                     value={apfCreator}
                     onChange={(e) => setApfCreator(e.target.value)}
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
 
                 <div>
                   <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">Action Plan</Label>
                   <Select value={actionPlan} onValueChange={setActionPlan}>
-                    <SelectTrigger className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} clay-input`}>
+                    <SelectTrigger className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} clay-input`}>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#1a1d2e] border-white/20">
-                      <SelectItem value="FAILED">FAILED</SelectItem>
-                      <SelectItem value="PASSED">PASSED</SelectItem>
-                      <SelectItem value="N/A">N/A</SelectItem>
+                    <SelectContent className="bg-[#2a2d3a] border-white/30">
+                      <SelectItem value="FAILED" className="text-white focus:bg-white/20 focus:text-white">FAILED</SelectItem>
+                      <SelectItem value="PASSED" className="text-white focus:bg-white/20 focus:text-white">PASSED</SelectItem>
+                      <SelectItem value="N/A" className="text-white focus:bg-white/20 focus:text-white">N/A</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -295,13 +295,13 @@ ${whyMoreThan4}`;
                 <div>
                   <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">CE Called In</Label>
                   <Select value={ceCalledIn} onValueChange={setCeCalledIn}>
-                    <SelectTrigger className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} clay-input`}>
+                    <SelectTrigger className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} clay-input`}>
                       <SelectValue placeholder="Select..." />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#1a1d2e] border-white/20">
-                      <SelectItem value="Yes">Yes</SelectItem>
-                      <SelectItem value="No">No</SelectItem>
-                      <SelectItem value="NotRequired">NotRequired</SelectItem>
+                    <SelectContent className="bg-[#2a2d3a] border-white/30">
+                      <SelectItem value="Yes" className="text-white focus:bg-white/20 focus:text-white">Yes</SelectItem>
+                      <SelectItem value="No" className="text-white focus:bg-white/20 focus:text-white">No</SelectItem>
+                      <SelectItem value="NotRequired" className="text-white focus:bg-white/20 focus:text-white">NotRequired</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -309,12 +309,12 @@ ${whyMoreThan4}`;
                 <div>
                   <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">Min-conf</Label>
                   <Select value={minConf} onValueChange={setMinConf}>
-                    <SelectTrigger className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} clay-input`}>
+                    <SelectTrigger className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} clay-input`}>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#1a1d2e] border-white/20">
-                      <SelectItem value="No">No</SelectItem>
-                      <SelectItem value="Yes">Yes</SelectItem>
+                    <SelectContent className="bg-[#2a2d3a] border-white/30">
+                      <SelectItem value="No" className="text-white focus:bg-white/20 focus:text-white">No</SelectItem>
+                      <SelectItem value="Yes" className="text-white focus:bg-white/20 focus:text-white">Yes</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -349,7 +349,7 @@ ${whyMoreThan4}`;
                     value={ceNamePhone}
                     onChange={(e) => setCeNamePhone(e.target.value)}
                     placeholder="CE name and phone number"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
 
@@ -359,7 +359,7 @@ ${whyMoreThan4}`;
                     value={prevWoProblem}
                     onChange={(e) => setPrevWoProblem(e.target.value)}
                     placeholder="Previous WO problem (short)"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
 
@@ -369,7 +369,7 @@ ${whyMoreThan4}`;
                     value={prevWoAction}
                     onChange={(e) => setPrevWoAction(e.target.value)}
                     placeholder="Actions performed in previous WO"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
 
@@ -379,7 +379,7 @@ ${whyMoreThan4}`;
                     value={newSymptom}
                     onChange={(e) => setNewSymptom(e.target.value)}
                     placeholder="New symptom description"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'min-h-[45px] text-xs' : 'min-h-[55px] text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'min-h-[45px] text-xs' : 'min-h-[55px] text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
 
@@ -389,7 +389,7 @@ ${whyMoreThan4}`;
                     value={causeNewSymptom}
                     onChange={(e) => setCauseNewSymptom(e.target.value)}
                     placeholder="Your assessment of the cause"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'min-h-[45px] text-xs' : 'min-h-[55px] text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'min-h-[45px] text-xs' : 'min-h-[55px] text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
 
@@ -399,7 +399,7 @@ ${whyMoreThan4}`;
                     value={nextAction}
                     onChange={(e) => setNextAction(e.target.value)}
                     placeholder="Planned next step"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
 
@@ -411,13 +411,13 @@ ${whyMoreThan4}`;
                     value={partOrder}
                     onChange={(e) => setPartOrder(e.target.value)}
                     placeholder="z. B. Cover - 5M11Q55940"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm font-mono ${denseMode ? 'min-h-[50px] text-[10px]' : 'min-h-[60px] text-xs'} focus:border-[#E1251B] transition-all clay-input`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white font-mono ${denseMode ? 'min-h-[50px] text-[10px]' : 'min-h-[60px] text-xs'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setPartsExpanded(!partsExpanded)}
-                    className={`mt-1.5 text-[10px] bg-white/5 border border-white/10 hover:bg-white/10 backdrop-blur-sm ${denseMode ? 'h-6 px-2' : 'h-7 px-2.5'} clay-button`}
+                    className={`mt-1.5 text-[10px] bg-white/10 border border-white/20 hover:bg-white/20 text-white backdrop-blur-sm font-semibold ${denseMode ? 'h-6 px-2' : 'h-7 px-2.5'} clay-button`}
                   >
                     Part-Optionen {partsExpanded ? '▲' : '▼'}
                   </Button>
@@ -446,12 +446,12 @@ ${whyMoreThan4}`;
                 <div>
                   <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">Min-conf</Label>
                   <Select value={minConfTs} onValueChange={setMinConfTs}>
-                    <SelectTrigger className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} clay-input`}>
+                    <SelectTrigger className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} clay-input`}>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#1a1d2e] border-white/20">
-                      <SelectItem value="No">No</SelectItem>
-                      <SelectItem value="Yes">Yes</SelectItem>
+                    <SelectContent className="bg-[#2a2d3a] border-white/30">
+                      <SelectItem value="No" className="text-white focus:bg-white/20 focus:text-white">No</SelectItem>
+                      <SelectItem value="Yes" className="text-white focus:bg-white/20 focus:text-white">Yes</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -462,7 +462,7 @@ ${whyMoreThan4}`;
                     value={tsSearch}
                     onChange={(e) => setTsSearch(e.target.value)}
                     placeholder="z. B. RAM, SSD, Battery…"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
 
@@ -470,7 +470,7 @@ ${whyMoreThan4}`;
                   variant="ghost"
                   size="sm"
                   onClick={() => setTsExpanded(!tsExpanded)}
-                  className={`text-[10px] bg-white/5 border border-white/10 hover:bg-white/10 backdrop-blur-sm ${denseMode ? 'h-6 px-2' : 'h-7 px-2.5'} clay-button`}
+                  className={`text-[10px] bg-white/10 border border-white/20 hover:bg-white/20 text-white backdrop-blur-sm font-semibold ${denseMode ? 'h-6 px-2' : 'h-7 px-2.5'} clay-button`}
                 >
                   TS-Optionen {tsExpanded ? '▲' : '▼'}
                 </Button>
@@ -492,7 +492,7 @@ ${whyMoreThan4}`;
                     value={additionalTsDetails}
                     onChange={(e) => setAdditionalTsDetails(e.target.value)}
                     placeholder="Optional: zusätzliche Details..."
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'min-h-[50px] text-xs' : 'min-h-[60px] text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'min-h-[50px] text-xs' : 'min-h-[60px] text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
               </div>
@@ -518,7 +518,7 @@ ${whyMoreThan4}`;
                       value={modelDescription}
                       onChange={(e) => setModelDescription(e.target.value)}
                       placeholder="e.g. T14s G3"
-                      className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                      className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                     />
                   </div>
 
@@ -559,7 +559,7 @@ ${whyMoreThan4}`;
                     value={sporadicNote}
                     onChange={(e) => setSporadicNote(e.target.value)}
                     placeholder="Optional note..."
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'min-h-[40px] text-xs' : 'min-h-[50px] text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'min-h-[40px] text-xs' : 'min-h-[50px] text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
 
@@ -571,7 +571,7 @@ ${whyMoreThan4}`;
                       value={whyMoreThan4}
                       onChange={(e) => setWhyMoreThan4(e.target.value)}
                       placeholder="Reason for more than 4 parts"
-                      className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'min-h-[40px] text-xs' : 'min-h-[50px] text-sm'} focus:border-[#E1251B] transition-all clay-input`}
+                      className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'min-h-[40px] text-xs' : 'min-h-[50px] text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                     />
                   </div>
                 )}

@@ -57,7 +57,7 @@ function OutputPane({ title, content, onClear, denseMode, show = true }) {
               disabled={!content}
               variant="outline"
               size="sm"
-              className={`border-white/10 hover:bg-white/10 backdrop-blur-sm ${denseMode ? 'h-6 px-2 text-[10px]' : 'h-7 px-2.5 text-[11px]'} font-medium clay-button`}
+              className={`bg-white/10 border-white/20 hover:bg-white/20 text-white backdrop-blur-sm ${denseMode ? 'h-6 px-2 text-[10px]' : 'h-7 px-2.5 text-[11px]'} font-semibold clay-button`}
             >
               <Copy className={`${denseMode ? 'w-3 h-3' : 'w-3.5 h-3.5'} mr-1`} />
               {copySuccess ? 'Copied!' : 'Copy'}
@@ -67,7 +67,7 @@ function OutputPane({ title, content, onClear, denseMode, show = true }) {
               disabled={!content}
               variant="outline"
               size="sm"
-              className={`border-white/10 hover:bg-white/10 backdrop-blur-sm ${denseMode ? 'h-6 px-2 text-[10px]' : 'h-7 px-2.5 text-[11px]'} font-medium clay-button`}
+              className={`bg-white/10 border-white/20 hover:bg-white/20 text-white backdrop-blur-sm ${denseMode ? 'h-6 px-2 text-[10px]' : 'h-7 px-2.5 text-[11px]'} font-semibold clay-button`}
             >
               <Download className={`${denseMode ? 'w-3 h-3' : 'w-3.5 h-3.5'} mr-1`} />
               .txt
@@ -77,12 +77,12 @@ function OutputPane({ title, content, onClear, denseMode, show = true }) {
               disabled={!content}
               variant="outline"
               size="sm"
-              className={`border-white/10 hover:bg-white/10 backdrop-blur-sm ${denseMode ? 'h-6 px-2 text-[10px]' : 'h-7 px-2.5 text-[11px]'} font-medium clay-button`}
+              className={`bg-white/10 border-white/20 hover:bg-white/20 text-white backdrop-blur-sm ${denseMode ? 'h-6 px-2 text-[10px]' : 'h-7 px-2.5 text-[11px]'} font-semibold clay-button`}
             >
               <Trash2 className={`${denseMode ? 'w-3 h-3' : 'w-3.5 h-3.5'}`} />
             </Button>
             {charCount > 0 && (
-              <span className="ml-auto text-[10px] text-gray-500">
+              <span className="ml-auto text-[10px] text-gray-400 font-medium">
                 {charCount.toLocaleString()} chars
               </span>
             )}
@@ -117,6 +117,8 @@ function OutputPane({ title, content, onClear, denseMode, show = true }) {
 }
 
 export default function MultiOutput({ outputs, onGenerate, onClearPane, denseMode }) {
+  const visibleOutputsCount = outputs.showEscalation ? 3 : 2;
+  
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between mb-3">
@@ -126,13 +128,13 @@ export default function MultiOutput({ outputs, onGenerate, onClearPane, denseMod
         <Button
           onClick={onGenerate}
           size="sm"
-          className={`bg-gradient-to-r from-[#E1251B] to-[#c51f17] hover:from-[#c51f17] hover:to-[#a01915] text-white ${denseMode ? 'h-7 px-3 text-[11px]' : 'h-8 px-4 text-xs'} shadow-lg shadow-[#E1251B]/30 font-medium clay-button-primary`}
+          className={`bg-gradient-to-r from-[#E1251B] to-[#c51f17] hover:from-[#c51f17] hover:to-[#a01915] text-white ${denseMode ? 'h-7 px-3 text-[11px]' : 'h-8 px-4 text-xs'} shadow-lg shadow-[#E1251B]/30 font-bold clay-button-primary`}
         >
           Generate All
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 items-start">
+      <div className={`grid ${visibleOutputsCount === 3 ? 'grid-cols-1 xl:grid-cols-3' : 'grid-cols-1 lg:grid-cols-2'} gap-3 items-start`}>
         <OutputPane
           title="APF OUTPUT"
           content={outputs.apf}
