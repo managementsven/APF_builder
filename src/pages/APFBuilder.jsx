@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import PartChips from "../components/apf/PartChips";
 import TSChips from "../components/apf/TSChips";
-import OutputPanel from "../components/apf/OutputPanel";
+import MultiOutput from "../components/apf/MultiOutput";
 
 export default function APFBuilder() {
   // Dense mode
@@ -52,13 +52,13 @@ export default function APFBuilder() {
   const [moreThan4Parts, setMoreThan4Parts] = useState(false);
   const [whyMoreThan4, setWhyMoreThan4] = useState('');
 
-  // Output
-  const [output, setOutput] = useState('');
-
-  // Show/hide logic for whyMoreThan4 field
-  useEffect(() => {
-    // This handles the conditional display
-  }, [moreThan4Parts]);
+  // Outputs
+  const [outputs, setOutputs] = useState({
+    apf: '',
+    premier: '',
+    escalation: '',
+    showEscalation: false
+  });
 
   const handleReset = () => {
     setCaseId('');
@@ -80,13 +80,17 @@ export default function APFBuilder() {
     setSelectedTs(new Set());
     setTsExpanded(false);
     setAdditionalTsDetails('');
-    // Reset Premier fields
     setModelDescription('');
     setSporadicAllParts(false);
     setSporadicNote('');
     setMoreThan4Parts(false);
     setWhyMoreThan4('');
-    setOutput('');
+    setOutputs({
+      apf: '',
+      premier: '',
+      escalation: '',
+      showEscalation: false
+    });
   };
 
   const handleGenerate = () => {
@@ -94,25 +98,19 @@ export default function APFBuilder() {
     const date = now.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
     const time = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
 
-    // Build CE Called In checkboxes - each on separate line
+    // ========== APF Output ==========
     const ceCalledInYes = ceCalledIn === 'Yes' ? '[X]' : '[]';
     const ceCalledInNo = ceCalledIn === 'No' ? '[X]' : '[]';
     const ceCalledInNotRequired = ceCalledIn === 'NotRequired' ? '[X]' : '[]';
-
-    // Build Min-conf checkboxes
     const minConfYes = minConf === 'Yes' ? '[X]' : '[]';
     const minConfNo = minConf === 'No' ? '[X]' : '[]';
-
-    // Build TS list as a sentence
     const tsList = Array.from(selectedTs).join(', ');
     const tsFormatted = tsList ? tsList + '.' : '';
-
-    // Build parts not picked up line
     const partsLine = partsNotPickedUp 
       ? '\n[] CE did not pick up parts within 5 days -parts returned (set repeat repair reason to OTHER/UNKNOWN)\n' 
       : '';
 
-    const mainOutput = `Case ID :${caseId}
+    const apfOutput = `Case ID :${caseId}
 APFCreator: ${apfCreator}
 
 **** ACTION PLAN ${actionPlan} ****
@@ -140,15 +138,13 @@ ${partOrder}
 Generated on: ${date} at ${time}
 --- Ende ---`;
 
-    // Build Premier Support block
+    // ========== Premier Support Output ==========
     const repeatRepairYes = actionPlan === 'FAILED' ? '[x]' : '[]';
     const repeatRepairNo = actionPlan === 'FAILED' ? '[]' : '[x]';
     const sporadicMark = sporadicAllParts ? '[x]' : '[]';
     const tsListCommaSeparated = Array.from(selectedTs).join(', ');
 
-    const premierBlock = `
-
-=========================================
+    const premierOutput = `=========================================
 *Premier - Support*
 =========================================
 Model description: ${modelDescription}
@@ -165,27 +161,36 @@ ${partOrder}
 =========================================
 WO INITIATOR: ${apfCreator}`;
 
-    // Build >4 parts justification block if needed
-    let moreThan4Block = '';
+    // ========== >4 Parts Escalation Output ==========
+    let escalationOutput = '';
     const partLines = partOrder.split('\n').filter(line => line.trim());
+    
     if (moreThan4Parts && partLines.length > 4) {
-      // Extract part names (left side of " - ")
       const partNames = partLines.map(line => {
         const idx = line.indexOf(' - ');
         return idx > 0 ? line.substring(0, idx).trim() : line.trim();
       });
 
-      moreThan4Block = `
-
-Parts needed:
+      escalationOutput = `Parts needed:
 ${partNames.join('\n')}
 
 Why are more than 4 parts needed:
 ${whyMoreThan4}`;
     }
 
-    const outputText = mainOutput + premierBlock + moreThan4Block;
-    setOutput(outputText);
+    setOutputs({
+      apf: apfOutput,
+      premier: premierOutput,
+      escalation: escalationOutput,
+      showEscalation: moreThan4Parts
+    });
+  };
+
+  const handleClearPane = (pane) => {
+    setOutputs(prev => ({
+      ...prev,
+      [pane]: ''
+    }));
   };
 
   const SectionHeader = ({ title, expanded, setExpanded }) => (
@@ -221,7 +226,7 @@ ${whyMoreThan4}`;
           </div>
           
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10 clay-panel">
               <Checkbox 
                 id="dense" 
                 checked={denseMode} 
@@ -234,7 +239,7 @@ ${whyMoreThan4}`;
               variant="outline" 
               size="sm"
               onClick={handleReset}
-              className="bg-white/5 border-white/10 hover:bg-white/10 backdrop-blur-sm text-xs h-8"
+              className="bg-white/5 border-white/10 hover:bg-white/10 backdrop-blur-sm text-xs h-8 clay-button"
             >
               Reset
             </Button>
@@ -246,7 +251,7 @@ ${whyMoreThan4}`;
       <div className="max-w-[1600px] mx-auto px-4 py-4 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 items-start">
           {/* Column 1: Allgemein */}
-          <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl transition-all duration-300 ${denseMode ? 'p-2.5' : 'p-3'} ${!allgemeinExpanded ? 'h-auto' : ''}`}>
+          <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl transition-all duration-300 ${denseMode ? 'p-2.5' : 'p-3'} clay-panel`}>
             <SectionHeader 
               title="ALLGEMEIN" 
               expanded={allgemeinExpanded} 
@@ -260,7 +265,7 @@ ${whyMoreThan4}`;
                     value={caseId}
                     onChange={(e) => setCaseId(e.target.value)}
                     placeholder="z. B. 2027910571"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
 
@@ -269,14 +274,14 @@ ${whyMoreThan4}`;
                   <Input
                     value={apfCreator}
                     onChange={(e) => setApfCreator(e.target.value)}
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
 
                 <div>
                   <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">Action Plan</Label>
                   <Select value={actionPlan} onValueChange={setActionPlan}>
-                    <SelectTrigger className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'}`}>
+                    <SelectTrigger className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} clay-input`}>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-[#1a1d2e] border-white/20">
@@ -290,7 +295,7 @@ ${whyMoreThan4}`;
                 <div>
                   <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">CE Called In</Label>
                   <Select value={ceCalledIn} onValueChange={setCeCalledIn}>
-                    <SelectTrigger className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'}`}>
+                    <SelectTrigger className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} clay-input`}>
                       <SelectValue placeholder="Select..." />
                     </SelectTrigger>
                     <SelectContent className="bg-[#1a1d2e] border-white/20">
@@ -304,7 +309,7 @@ ${whyMoreThan4}`;
                 <div>
                   <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">Min-conf</Label>
                   <Select value={minConf} onValueChange={setMinConf}>
-                    <SelectTrigger className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'}`}>
+                    <SelectTrigger className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} clay-input`}>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-[#1a1d2e] border-white/20">
@@ -330,7 +335,7 @@ ${whyMoreThan4}`;
           </div>
 
           {/* Column 2: WO / Symptom */}
-          <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl transition-all duration-300 ${denseMode ? 'p-2.5' : 'p-3'} ${!woSymptomExpanded ? 'h-auto' : ''}`}>
+          <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl transition-all duration-300 ${denseMode ? 'p-2.5' : 'p-3'} clay-panel`}>
             <SectionHeader 
               title="WO / SYMPTOM" 
               expanded={woSymptomExpanded} 
@@ -344,7 +349,7 @@ ${whyMoreThan4}`;
                     value={ceNamePhone}
                     onChange={(e) => setCeNamePhone(e.target.value)}
                     placeholder="CE name and phone number"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
 
@@ -354,7 +359,7 @@ ${whyMoreThan4}`;
                     value={prevWoProblem}
                     onChange={(e) => setPrevWoProblem(e.target.value)}
                     placeholder="Previous WO problem (short)"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
 
@@ -364,7 +369,7 @@ ${whyMoreThan4}`;
                     value={prevWoAction}
                     onChange={(e) => setPrevWoAction(e.target.value)}
                     placeholder="Actions performed in previous WO"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
 
@@ -374,7 +379,7 @@ ${whyMoreThan4}`;
                     value={newSymptom}
                     onChange={(e) => setNewSymptom(e.target.value)}
                     placeholder="New symptom description"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'min-h-[45px] text-xs' : 'min-h-[55px] text-sm'} focus:border-[#E1251B] transition-all`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'min-h-[45px] text-xs' : 'min-h-[55px] text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
 
@@ -384,7 +389,7 @@ ${whyMoreThan4}`;
                     value={causeNewSymptom}
                     onChange={(e) => setCauseNewSymptom(e.target.value)}
                     placeholder="Your assessment of the cause"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'min-h-[45px] text-xs' : 'min-h-[55px] text-sm'} focus:border-[#E1251B] transition-all`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'min-h-[45px] text-xs' : 'min-h-[55px] text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
 
@@ -394,7 +399,7 @@ ${whyMoreThan4}`;
                     value={nextAction}
                     onChange={(e) => setNextAction(e.target.value)}
                     placeholder="Planned next step"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
 
@@ -406,13 +411,13 @@ ${whyMoreThan4}`;
                     value={partOrder}
                     onChange={(e) => setPartOrder(e.target.value)}
                     placeholder="z. B. Cover - 5M11Q55940"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm font-mono ${denseMode ? 'min-h-[50px] text-[10px]' : 'min-h-[60px] text-xs'} focus:border-[#E1251B] transition-all`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm font-mono ${denseMode ? 'min-h-[50px] text-[10px]' : 'min-h-[60px] text-xs'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setPartsExpanded(!partsExpanded)}
-                    className={`mt-1.5 text-[10px] bg-white/5 border border-white/10 hover:bg-white/10 backdrop-blur-sm ${denseMode ? 'h-6 px-2' : 'h-7 px-2.5'}`}
+                    className={`mt-1.5 text-[10px] bg-white/5 border border-white/10 hover:bg-white/10 backdrop-blur-sm ${denseMode ? 'h-6 px-2' : 'h-7 px-2.5'} clay-button`}
                   >
                     Part-Optionen {partsExpanded ? '▲' : '▼'}
                   </Button>
@@ -430,7 +435,7 @@ ${whyMoreThan4}`;
           </div>
 
           {/* Column 3: CE On-Site TS */}
-          <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl transition-all duration-300 ${denseMode ? 'p-2.5' : 'p-3'} ${!ceOnSiteExpanded ? 'h-auto' : ''}`}>
+          <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl transition-all duration-300 ${denseMode ? 'p-2.5' : 'p-3'} clay-panel`}>
             <SectionHeader 
               title="CE ON-SITE TS" 
               expanded={ceOnSiteExpanded} 
@@ -441,7 +446,7 @@ ${whyMoreThan4}`;
                 <div>
                   <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">Min-conf</Label>
                   <Select value={minConfTs} onValueChange={setMinConfTs}>
-                    <SelectTrigger className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'}`}>
+                    <SelectTrigger className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} clay-input`}>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-[#1a1d2e] border-white/20">
@@ -457,7 +462,7 @@ ${whyMoreThan4}`;
                     value={tsSearch}
                     onChange={(e) => setTsSearch(e.target.value)}
                     placeholder="z. B. RAM, SSD, Battery…"
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
 
@@ -465,7 +470,7 @@ ${whyMoreThan4}`;
                   variant="ghost"
                   size="sm"
                   onClick={() => setTsExpanded(!tsExpanded)}
-                  className={`text-[10px] bg-white/5 border border-white/10 hover:bg-white/10 backdrop-blur-sm ${denseMode ? 'h-6 px-2' : 'h-7 px-2.5'}`}
+                  className={`text-[10px] bg-white/5 border border-white/10 hover:bg-white/10 backdrop-blur-sm ${denseMode ? 'h-6 px-2' : 'h-7 px-2.5'} clay-button`}
                 >
                   TS-Optionen {tsExpanded ? '▲' : '▼'}
                 </Button>
@@ -487,7 +492,7 @@ ${whyMoreThan4}`;
                     value={additionalTsDetails}
                     onChange={(e) => setAdditionalTsDetails(e.target.value)}
                     placeholder="Optional: zusätzliche Details..."
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'min-h-[50px] text-xs' : 'min-h-[60px] text-sm'} focus:border-[#E1251B] transition-all`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'min-h-[50px] text-xs' : 'min-h-[60px] text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
               </div>
@@ -497,7 +502,7 @@ ${whyMoreThan4}`;
 
         {/* Premier Support Section - Full Width */}
         <div className="mt-3">
-          <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl transition-all duration-300 ${denseMode ? 'p-2.5' : 'p-3'}`}>
+          <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl transition-all duration-300 ${denseMode ? 'p-2.5' : 'p-3'} clay-panel`}>
             <SectionHeader 
               title="PREMIER - SUPPORT TEMPLATE" 
               expanded={premierExpanded} 
@@ -513,7 +518,7 @@ ${whyMoreThan4}`;
                       value={modelDescription}
                       onChange={(e) => setModelDescription(e.target.value)}
                       placeholder="e.g. T14s G3"
-                      className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all`}
+                      className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                     />
                   </div>
 
@@ -554,7 +559,7 @@ ${whyMoreThan4}`;
                     value={sporadicNote}
                     onChange={(e) => setSporadicNote(e.target.value)}
                     placeholder="Optional note..."
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'min-h-[40px] text-xs' : 'min-h-[50px] text-sm'} focus:border-[#E1251B] transition-all`}
+                    className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'min-h-[40px] text-xs' : 'min-h-[50px] text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                   />
                 </div>
 
@@ -566,7 +571,7 @@ ${whyMoreThan4}`;
                       value={whyMoreThan4}
                       onChange={(e) => setWhyMoreThan4(e.target.value)}
                       placeholder="Reason for more than 4 parts"
-                      className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'min-h-[40px] text-xs' : 'min-h-[50px] text-sm'} focus:border-[#E1251B] transition-all`}
+                      className={`bg-black/30 border-white/10 backdrop-blur-sm ${denseMode ? 'min-h-[40px] text-xs' : 'min-h-[50px] text-sm'} focus:border-[#E1251B] transition-all clay-input`}
                     />
                   </div>
                 )}
@@ -575,11 +580,12 @@ ${whyMoreThan4}`;
           </div>
         </div>
 
-        {/* Output Section - Full Width */}
+        {/* Multi-Output Section */}
         <div className="mt-3">
-          <OutputPanel 
-            output={output}
+          <MultiOutput
+            outputs={outputs}
             onGenerate={handleGenerate}
+            onClearPane={handleClearPane}
             denseMode={denseMode}
           />
         </div>
@@ -594,6 +600,64 @@ ${whyMoreThan4}`;
         }
         .dense .space-y-1\.5 > * + * {
           margin-top: 0.25rem;
+        }
+        
+        /* Claymorphism effects */
+        .clay-panel {
+          box-shadow: 
+            inset 2px 2px 4px rgba(255, 255, 255, 0.03),
+            inset -2px -2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .clay-input:focus {
+          box-shadow: 
+            inset 1px 1px 2px rgba(0, 0, 0, 0.4),
+            0 0 0 2px rgba(225, 37, 27, 0.2);
+        }
+        
+        .clay-button {
+          box-shadow: 
+            2px 2px 4px rgba(0, 0, 0, 0.3),
+            -1px -1px 2px rgba(255, 255, 255, 0.03);
+        }
+        
+        .clay-button:hover {
+          box-shadow: 
+            inset 1px 1px 2px rgba(0, 0, 0, 0.3),
+            1px 1px 2px rgba(255, 255, 255, 0.02);
+        }
+        
+        .clay-button:active {
+          box-shadow: 
+            inset 2px 2px 4px rgba(0, 0, 0, 0.4);
+        }
+        
+        .clay-button-primary {
+          box-shadow: 
+            3px 3px 6px rgba(0, 0, 0, 0.4),
+            -1px -1px 3px rgba(255, 255, 255, 0.05),
+            0 0 20px rgba(225, 37, 27, 0.3);
+        }
+        
+        .clay-button-primary:hover {
+          box-shadow: 
+            2px 2px 4px rgba(0, 0, 0, 0.5),
+            0 0 25px rgba(225, 37, 27, 0.4);
+        }
+        
+        .clay-output {
+          box-shadow: 
+            inset 3px 3px 6px rgba(0, 0, 0, 0.5),
+            inset -1px -1px 2px rgba(255, 255, 255, 0.02);
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+          .animate-pulse {
+            animation: none;
+          }
+          * {
+            transition-duration: 0.01ms !important;
+          }
         }
       `}</style>
     </div>
