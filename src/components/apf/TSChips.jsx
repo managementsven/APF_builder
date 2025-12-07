@@ -2,61 +2,61 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 
 const TS_OPTIONS = [
-  'AC adapter',
-  'Peripherals disconnected',
-  'LCD/hinges',
-  'SSD inspection',
-  'Front panel cables',
-  'Battery connector',
-  'Cable routing',
-  'Keyboard',
-  'Power drain',
-  'Docking station',
-  'Camera shutter',
-  'WLAN card reseat',
-  'Mainboard inspection',
-  'Battery removed test',
-  'CMOS reset',
-  'Touchpad',
-  'AC port',
-  'USB ports',
-  'Display mechanics',
-  'Antenna cables',
-  'Fan check',
-  'Battery swelling',
-  'POST / beep codes',
-  'Mainboard heat check',
-  'Liquid damage',
-  'LAN port',
-  'RAM reseat',
-  'GPU reseat',
-  'PSU cables',
-  'Heatsink mounting',
-  'USB-C power',
-  'Hinge stability',
-  'Speaker openings',
-  'Port damage',
-  'External devices removed',
-  'External monitor',
-  'RAM individual test',
-  'SSD reseat',
-  'PSU switch',
-  'Thermal indicators',
-  'Chassis inspection',
-  'Video output',
-  'Audio ports',
-  'WiFi antenna check',
-  'Bluetooth check',
-  'BIOS update',
-  'Driver reinstall',
-  'OS reinstall',
-  'Memory test',
-  'Display calibration',
-  'Touchscreen test',
-  'Webcam test',
-  'Microphone test',
-  'Charger test',
-  'Battery calibration',
+  'AC ADAPTER',
+  'PERIPHERALS-OFF',
+  'LCD/HINGES',
+  'SSD INSPECT',
+  'FRONT-CABLES',
+  'BATT-CONN',
+  'CABLE-ROUTE',
+  'KEYBOARD',
+  'POWER-DRAIN',
+  'DOCK-STATION',
+  'CAM-SHUTTER',
+  'WLAN-RESEAT',
+  'MB-INSPECT',
+  'BATT-REMOVED',
+  'CMOS-RESET',
+  'TOUCHPAD',
+  'AC-PORT',
+  'USB-PORTS',
+  'DISP-MECH',
+  'ANT-CABLES',
+  'FAN-CHECK',
+  'BATT-SWELL',
+  'POST/BEEP',
+  'MB-HEAT',
+  'LIQUID-DMG',
+  'LAN-PORT',
+  'RAM-RESEAT',
+  'GPU-RESEAT',
+  'PSU-CABLES',
+  'HEATSINK-MT',
+  'USB-C-PWR',
+  'HINGE-STAB',
+  'SPK-OPEN',
+  'PORT-DMG',
+  'EXT-DEV-OFF',
+  'EXT-MONITOR',
+  'RAM-INDIV',
+  'SSD-RESEAT',
+  'PSU-SWITCH',
+  'THERMAL-IND',
+  'CHASSIS-INS',
+  'VIDEO-OUT',
+  'AUDIO-PORTS',
+  'WIFI-ANT',
+  'BLUETOOTH',
+  'BIOS-UPDATE',
+  'DRIVER-REINST',
+  'OS-REINSTALL',
+  'MEM-TEST',
+  'DISP-CALIB',
+  'TOUCH-TEST',
+  'WEBCAM-TEST',
+  'MIC-TEST',
+  'CHARGER-TEST',
+  'BATT-CALIB',
 ];
 
 export default function TSChips({ selectedTs, setSelectedTs, tsSearch, denseMode }) {
@@ -85,44 +85,24 @@ export default function TSChips({ selectedTs, setSelectedTs, tsSearch, denseMode
   };
 
   return (
-    <div className={`${denseMode ? 'mt-1.5' : 'mt-2'}`}>
-      <div className={`flex gap-1.5 ${denseMode ? 'mb-1.5' : 'mb-2'}`}>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleSelectAll}
-          className={`${denseMode ? 'h-6 px-2 text-[10px]' : 'h-7 px-2.5 text-[11px]'} bg-white/5 border-white/10 hover:bg-white/10 backdrop-blur-sm font-medium`}
-        >
-          Alle auswählen
+    <div className="ts-chips-container">
+      <div className="ts-controls">
+        <Button variant="outline" size="sm" onClick={handleSelectAll} className="ts-ctrl-btn">
+          SELECT-ALL
         </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleDeselectAll}
-          className={`${denseMode ? 'h-6 px-2 text-[10px]' : 'h-7 px-2.5 text-[11px]'} bg-white/5 border-white/10 hover:bg-white/10 backdrop-blur-sm font-medium`}
-        >
-          Alle abwählen
+        <Button variant="outline" size="sm" onClick={handleDeselectAll} className="ts-ctrl-btn">
+          CLEAR-ALL
         </Button>
       </div>
 
-      <div className={`grid grid-cols-2 sm:grid-cols-3 ${denseMode ? 'gap-1' : 'gap-1.5'} max-h-[350px] overflow-y-auto pr-1`}>
+      <div className="ts-chips-grid">
         {filteredOptions.map(option => (
           <Button
             key={option}
             variant="outline"
             size="sm"
             onClick={() => handleToggle(option)}
-            role="button"
-            aria-pressed={selectedTs.has(option)}
-            title={option}
-            className={`
-              ${denseMode ? 'h-6 px-1.5 text-[10px]' : 'h-7 px-2 text-[11px]'}
-              border-white/10 hover:bg-white/10 transition-all text-left justify-start backdrop-blur-sm font-medium
-              ${selectedTs.has(option)
-                ? 'bg-gradient-to-r from-[#E1251B] to-[#c51f17] border-[#E1251B] text-white hover:from-[#c51f17] hover:to-[#a01915] shadow-lg shadow-[#E1251B]/30'
-                : 'bg-white/5'
-              }
-            `}
+            className={`ts-chip ${selectedTs.has(option) ? 'selected' : ''}`}
           >
             {option}
           </Button>
@@ -130,10 +110,107 @@ export default function TSChips({ selectedTs, setSelectedTs, tsSearch, denseMode
       </div>
 
       {filteredOptions.length === 0 && (
-        <div className="text-center text-gray-500 text-xs py-3">
-          Keine TS-Optionen gefunden
-        </div>
+        <div className="no-results">NO TS OPTIONS FOUND</div>
       )}
+
+      <style jsx>{`
+        .ts-chips-container {
+          margin-top: 8px;
+          padding: 10px;
+          background: rgba(5, 10, 20, 0.6);
+          border: 1px solid rgba(100, 150, 200, 0.2);
+        }
+
+        .ts-controls {
+          display: flex;
+          gap: 8px;
+          margin-bottom: 10px;
+        }
+
+        .ts-ctrl-btn {
+          background: rgba(30, 35, 45, 0.8);
+          border: 1px solid rgba(100, 200, 255, 0.3);
+          color: rgba(100, 200, 255, 0.9);
+          font-size: 8px;
+          font-weight: 600;
+          letter-spacing: 1px;
+          height: 24px;
+          padding: 0 10px;
+          transition: all 0.15s;
+        }
+
+        .ts-ctrl-btn:hover {
+          background: rgba(100, 200, 255, 0.15);
+          border-color: rgba(100, 200, 255, 0.6);
+          color: #64c8ff;
+        }
+
+        .ts-chips-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+          gap: 6px;
+          max-height: 350px;
+          overflow-y: auto;
+          padding-right: 4px;
+        }
+
+        .ts-chips-grid::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        .ts-chips-grid::-webkit-scrollbar-track {
+          background: rgba(20, 25, 35, 0.5);
+        }
+
+        .ts-chips-grid::-webkit-scrollbar-thumb {
+          background: rgba(100, 200, 255, 0.3);
+          border-radius: 3px;
+        }
+
+        .ts-chips-grid::-webkit-scrollbar-thumb:hover {
+          background: rgba(100, 200, 255, 0.5);
+        }
+
+        .ts-chip {
+          background: rgba(30, 35, 45, 0.7);
+          border: 1px solid rgba(100, 150, 200, 0.3);
+          color: rgba(100, 200, 255, 0.8);
+          font-size: 8px;
+          font-weight: 600;
+          letter-spacing: 0.3px;
+          height: 28px;
+          padding: 0 8px;
+          transition: all 0.15s;
+          text-align: left;
+          justify-content: flex-start;
+        }
+
+        .ts-chip:hover {
+          background: rgba(100, 200, 255, 0.1);
+          border-color: rgba(100, 200, 255, 0.5);
+          color: #64c8ff;
+        }
+
+        .ts-chip.selected {
+          background: linear-gradient(135deg, rgba(180, 255, 50, 0.25) 0%, rgba(150, 220, 40, 0.25) 100%);
+          border-color: #b4ff32;
+          color: #b4ff32;
+          box-shadow: 0 0 12px rgba(180, 255, 50, 0.3);
+        }
+
+        .ts-chip.selected:hover {
+          background: linear-gradient(135deg, rgba(180, 255, 50, 0.35) 0%, rgba(150, 220, 40, 0.35) 100%);
+          box-shadow: 0 0 16px rgba(180, 255, 50, 0.4);
+        }
+
+        .no-results {
+          text-align: center;
+          padding: 20px;
+          color: rgba(160, 168, 176, 0.5);
+          font-size: 10px;
+          letter-spacing: 1px;
+        }
+      `}</style>
     </div>
   );
 }

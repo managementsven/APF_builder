@@ -11,16 +11,12 @@ import TSChips from "../components/apf/TSChips";
 import MultiOutput from "../components/apf/MultiOutput";
 
 export default function APFBuilder() {
-  // Dense mode
   const [denseMode, setDenseMode] = useState(false);
-
-  // Collapsible sections
   const [allgemeinExpanded, setAllgemeinExpanded] = useState(true);
   const [woSymptomExpanded, setWoSymptomExpanded] = useState(true);
   const [ceOnSiteExpanded, setCeOnSiteExpanded] = useState(true);
   const [premierExpanded, setPremierExpanded] = useState(true);
 
-  // Allgemein fields
   const [caseId, setCaseId] = useState('');
   const [apfCreator, setApfCreator] = useState('');
   const [actionPlan, setActionPlan] = useState('FAILED');
@@ -28,7 +24,6 @@ export default function APFBuilder() {
   const [minConf, setMinConf] = useState('No');
   const [partsNotPickedUp, setPartsNotPickedUp] = useState(false);
 
-  // WO / Symptom fields
   const [ceNamePhone, setCeNamePhone] = useState('');
   const [prevWoProblem, setPrevWoProblem] = useState('');
   const [prevWoAction, setPrevWoAction] = useState('');
@@ -38,21 +33,18 @@ export default function APFBuilder() {
   const [partOrder, setPartOrder] = useState('');
   const [partsExpanded, setPartsExpanded] = useState(false);
 
-  // CE On-Site TS fields
   const [minConfTs, setMinConfTs] = useState('No');
   const [tsSearch, setTsSearch] = useState('');
   const [selectedTs, setSelectedTs] = useState(new Set());
   const [tsExpanded, setTsExpanded] = useState(false);
   const [additionalTsDetails, setAdditionalTsDetails] = useState('');
 
-  // Premier Support fields
   const [modelDescription, setModelDescription] = useState('');
   const [sporadicAllParts, setSporadicAllParts] = useState(false);
   const [sporadicNote, setSporadicNote] = useState('');
   const [moreThan4Parts, setMoreThan4Parts] = useState(false);
   const [whyMoreThan4, setWhyMoreThan4] = useState('');
 
-  // Outputs
   const [outputs, setOutputs] = useState({
     apf: '',
     premier: '',
@@ -85,12 +77,7 @@ export default function APFBuilder() {
     setSporadicNote('');
     setMoreThan4Parts(false);
     setWhyMoreThan4('');
-    setOutputs({
-      apf: '',
-      premier: '',
-      escalation: '',
-      showEscalation: false
-    });
+    setOutputs({ apf: '', premier: '', escalation: '', showEscalation: false });
   };
 
   const handleGenerate = () => {
@@ -98,7 +85,6 @@ export default function APFBuilder() {
     const date = now.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
     const time = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
 
-    // ========== APF Output ==========
     const ceCalledInYes = ceCalledIn === 'Yes' ? '[X]' : '[]';
     const ceCalledInNo = ceCalledIn === 'No' ? '[X]' : '[]';
     const ceCalledInNotRequired = ceCalledIn === 'NotRequired' ? '[X]' : '[]';
@@ -138,7 +124,6 @@ ${partOrder}
 Generated on: ${date} at ${time}
 --- Ende ---`;
 
-    // ========== Premier Support Output ==========
     const repeatRepairYes = actionPlan === 'FAILED' ? '[x]' : '[]';
     const repeatRepairNo = actionPlan === 'FAILED' ? '[]' : '[x]';
     const sporadicMark = sporadicAllParts ? '[x]' : '[]';
@@ -161,7 +146,6 @@ ${partOrder}
 =========================================
 WO INITIATOR: ${apfCreator}`;
 
-    // ========== >4 Parts Escalation Output ==========
     let escalationOutput = '';
     const partLines = partOrder.split('\n').filter(line => line.trim());
     
@@ -187,571 +171,655 @@ ${whyMoreThan4}`;
   };
 
   const handleClearPane = (pane) => {
-    setOutputs(prev => ({
-      ...prev,
-      [pane]: ''
-    }));
+    setOutputs(prev => ({ ...prev, [pane]: '' }));
   };
 
   const SectionHeader = ({ title, expanded, setExpanded }) => (
     <button
       onClick={() => setExpanded(!expanded)}
-      className={`w-full flex items-center justify-between font-bold text-[#E1251B] ${denseMode ? 'text-sm py-2' : 'text-base py-2.5'} tracking-wide hover:opacity-80 transition-all`}
+      className="nerv-section-header"
     >
-      <span>{title}</span>
-      {expanded ? <ChevronUp className="w-4 h-4 transition-transform duration-300" /> : <ChevronDown className="w-4 h-4 transition-transform duration-300" />}
+      <div className="corner-brackets">
+        <span className="bracket tl"></span>
+        <span className="bracket tr"></span>
+        <span className="bracket bl"></span>
+        <span className="bracket br"></span>
+      </div>
+      <span className="title">{title}</span>
+      {expanded ? <ChevronUp className="chevron" /> : <ChevronDown className="chevron" />}
     </button>
   );
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-[#0a0e1a] via-[#0f1419] to-[#1a1d2e] text-gray-100 ${denseMode ? 'dense' : ''}`}>
-      {/* Futuristic Background Effects */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-20 left-20 w-96 h-96 bg-[#E1251B] rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-pulse"></div>
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-pulse" style={{animationDelay: '1s'}}></div>
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-pulse" style={{animationDelay: '2s'}}></div>
-      </div>
+    <div className="nerv-container">
+      <div className="scan-overlay"></div>
+      <div className="noise-overlay"></div>
 
-      {/* Toolbar */}
-      <div className="sticky top-0 z-50 backdrop-blur-xl bg-[#0f1419]/80 border-b border-gray-700/50 shadow-2xl">
-        <div className="max-w-[1600px] mx-auto px-4 py-2 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2.5">
-              <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6918520f2d38836a5df81c78/ce88ba337_apf_builder_logo_light_1024.png"
-                alt="APF Builder"
-                className="h-8 object-contain"
-              />
+      {/* Top Bar */}
+      <div className="nerv-topbar">
+        <div className="topbar-inner">
+          <div className="logo-section">
+            <img 
+              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6918520f2d38836a5df81c78/ce88ba337_apf_builder_logo_light_1024.png"
+              alt="APF"
+              className="logo-img"
+            />
+            <div className="telemetry">
+              <span className="telem-label">SYS-ID</span>
+              <span className="telem-value">APF-001</span>
             </div>
           </div>
           
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10 clay-panel">
+          <div className="controls-section">
+            <div className="mode-toggle">
               <Checkbox 
                 id="dense" 
                 checked={denseMode} 
                 onCheckedChange={setDenseMode}
-                className="border-gray-500 data-[state=checked]:bg-[#E1251B] data-[state=checked]:border-[#E1251B]"
+                className="nerv-checkbox"
               />
-              <Label htmlFor="dense" className="text-xs cursor-pointer font-medium">Kompakt</Label>
+              <Label htmlFor="dense" className="mode-label">COMPACT</Label>
             </div>
             <Button 
               variant="outline" 
               size="sm"
               onClick={handleReset}
-              className="bg-white/10 border-white/20 hover:bg-white/20 text-white backdrop-blur-sm text-xs h-8 font-semibold clay-button"
+              className="nerv-btn-secondary"
             >
-              Reset
+              RESET
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-[1600px] mx-auto px-4 py-4 relative z-10">
-        {/* Three Main Sections - IDENTICAL LAYOUT */}
+      {/* Main Grid */}
+      <div className="nerv-main">
         <div className="sections-grid">
           {/* Section 1: ALLGEMEIN */}
-          <div className="sectionBox">
+          <div className="nerv-panel">
             <SectionHeader 
               title="ALLGEMEIN" 
               expanded={allgemeinExpanded} 
               setExpanded={setAllgemeinExpanded}
             />
             {allgemeinExpanded && (
-              <div className="sectionContent">
-                <div>
-                  <Label className="fieldLabel">Case ID</Label>
-                  <Input
-                    value={caseId}
-                    onChange={(e) => setCaseId(e.target.value)}
-                    placeholder="z. B. 2027910571"
-                    className="fieldInput"
-                  />
+              <div className="panel-content">
+                <div className="field-group">
+                  <Label className="field-label">CASE-ID</Label>
+                  <Input value={caseId} onChange={(e) => setCaseId(e.target.value)} placeholder="2027910571" className="nerv-input" />
                 </div>
-
-                <div>
-                  <Label className="fieldLabel">APFCreator</Label>
-                  <Input
-                    value={apfCreator}
-                    onChange={(e) => setApfCreator(e.target.value)}
-                    className="fieldInput"
-                  />
+                <div className="field-group">
+                  <Label className="field-label">APF-CREATOR</Label>
+                  <Input value={apfCreator} onChange={(e) => setApfCreator(e.target.value)} className="nerv-input" />
                 </div>
-
-                <div>
-                  <Label className="fieldLabel">Action Plan</Label>
+                <div className="field-group">
+                  <Label className="field-label">ACTION-PLAN</Label>
                   <Select value={actionPlan} onValueChange={setActionPlan}>
-                    <SelectTrigger className="fieldInput">
+                    <SelectTrigger className="nerv-select">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#2a2d3a] border-white/30">
-                      <SelectItem value="FAILED" className="text-white focus:bg-white/20 focus:text-white">FAILED</SelectItem>
-                      <SelectItem value="PASSED" className="text-white focus:bg-white/20 focus:text-white">PASSED</SelectItem>
-                      <SelectItem value="N/A" className="text-white focus:bg-white/20 focus:text-white">N/A</SelectItem>
+                    <SelectContent className="nerv-dropdown">
+                      <SelectItem value="FAILED" className="nerv-option">FAILED</SelectItem>
+                      <SelectItem value="PASSED" className="nerv-option">PASSED</SelectItem>
+                      <SelectItem value="N/A" className="nerv-option">N/A</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-
-                <div>
-                  <Label className="fieldLabel">CE Called In</Label>
+                <div className="field-group">
+                  <Label className="field-label">CE-CALLED-IN</Label>
                   <Select value={ceCalledIn} onValueChange={setCeCalledIn}>
-                    <SelectTrigger className="fieldInput">
-                      <SelectValue placeholder="Select..." />
+                    <SelectTrigger className="nerv-select">
+                      <SelectValue placeholder="SELECT..." />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#2a2d3a] border-white/30">
-                      <SelectItem value="Yes" className="text-white focus:bg-white/20 focus:text-white">Yes</SelectItem>
-                      <SelectItem value="No" className="text-white focus:bg-white/20 focus:text-white">No</SelectItem>
-                      <SelectItem value="NotRequired" className="text-white focus:bg-white/20 focus:text-white">NotRequired</SelectItem>
+                    <SelectContent className="nerv-dropdown">
+                      <SelectItem value="Yes" className="nerv-option">YES</SelectItem>
+                      <SelectItem value="No" className="nerv-option">NO</SelectItem>
+                      <SelectItem value="NotRequired" className="nerv-option">NOT-REQUIRED</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-
-                <div>
-                  <Label className="fieldLabel">Min-conf</Label>
+                <div className="field-group">
+                  <Label className="field-label">MIN-CONF</Label>
                   <Select value={minConf} onValueChange={setMinConf}>
-                    <SelectTrigger className="fieldInput">
+                    <SelectTrigger className="nerv-select">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#2a2d3a] border-white/30">
-                      <SelectItem value="No" className="text-white focus:bg-white/20 focus:text-white">No</SelectItem>
-                      <SelectItem value="Yes" className="text-white focus:bg-white/20 focus:text-white">Yes</SelectItem>
+                    <SelectContent className="nerv-dropdown">
+                      <SelectItem value="No" className="nerv-option">NO</SelectItem>
+                      <SelectItem value="Yes" className="nerv-option">YES</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-
-                <div className="flex items-start gap-2 pt-1">
-                  <Checkbox
-                    id="parts-pickup"
-                    checked={partsNotPickedUp}
-                    onCheckedChange={setPartsNotPickedUp}
-                    className="border-gray-500 mt-0.5 data-[state=checked]:bg-[#E1251B] data-[state=checked]:border-[#E1251B]"
-                  />
-                  <Label htmlFor="parts-pickup" className="text-[10px] leading-tight cursor-pointer text-gray-300">
-                    CE did not pick up parts within 5 days – parts returned
-                  </Label>
+                <div className="field-checkbox">
+                  <Checkbox id="parts-pickup" checked={partsNotPickedUp} onCheckedChange={setPartsNotPickedUp} className="nerv-checkbox" />
+                  <Label htmlFor="parts-pickup" className="checkbox-label">CE DID NOT PICK UP PARTS (5 DAYS)</Label>
                 </div>
               </div>
             )}
           </div>
 
           {/* Section 2: WO / SYMPTOM */}
-          <div className="sectionBox">
+          <div className="nerv-panel">
             <SectionHeader 
               title="WO / SYMPTOM" 
               expanded={woSymptomExpanded} 
               setExpanded={setWoSymptomExpanded}
             />
             {woSymptomExpanded && (
-              <div className="sectionContent">
-                <div>
-                  <Label className="fieldLabel">CE Name/Phone</Label>
-                  <Input
-                    value={ceNamePhone}
-                    onChange={(e) => setCeNamePhone(e.target.value)}
-                    placeholder="CE name and phone number"
-                    className="fieldInput"
-                  />
+              <div className="panel-content">
+                <div className="field-group">
+                  <Label className="field-label">CE-NAME / PHONE</Label>
+                  <Input value={ceNamePhone} onChange={(e) => setCeNamePhone(e.target.value)} className="nerv-input" />
                 </div>
-
-                <div>
-                  <Label className="fieldLabel">Previous WO Problem</Label>
-                  <Input
-                    value={prevWoProblem}
-                    onChange={(e) => setPrevWoProblem(e.target.value)}
-                    placeholder="Previous WO problem (short)"
-                    className="fieldInput"
-                  />
+                <div className="field-group">
+                  <Label className="field-label">PREV-WO-PROBLEM</Label>
+                  <Input value={prevWoProblem} onChange={(e) => setPrevWoProblem(e.target.value)} className="nerv-input" />
                 </div>
-
-                <div>
-                  <Label className="fieldLabel">Previous WO Action</Label>
-                  <Input
-                    value={prevWoAction}
-                    onChange={(e) => setPrevWoAction(e.target.value)}
-                    placeholder="Actions performed in previous WO"
-                    className="fieldInput"
-                  />
+                <div className="field-group">
+                  <Label className="field-label">PREV-WO-ACTION</Label>
+                  <Input value={prevWoAction} onChange={(e) => setPrevWoAction(e.target.value)} className="nerv-input" />
                 </div>
-
-                <div>
-                  <Label className="fieldLabel">New Symptom</Label>
-                  <Textarea
-                    value={newSymptom}
-                    onChange={(e) => setNewSymptom(e.target.value)}
-                    placeholder="New symptom description"
-                    className="fieldInput fieldTextarea"
-                  />
+                <div className="field-group">
+                  <Label className="field-label">NEW-SYMPTOM</Label>
+                  <Textarea value={newSymptom} onChange={(e) => setNewSymptom(e.target.value)} className="nerv-textarea" />
                 </div>
-
-                <div>
-                  <Label className="fieldLabel">Cause for new symptom</Label>
-                  <Textarea
-                    value={causeNewSymptom}
-                    onChange={(e) => setCauseNewSymptom(e.target.value)}
-                    placeholder="Your assessment of the cause"
-                    className="fieldInput fieldTextarea"
-                  />
+                <div className="field-group">
+                  <Label className="field-label">CAUSE</Label>
+                  <Textarea value={causeNewSymptom} onChange={(e) => setCauseNewSymptom(e.target.value)} className="nerv-textarea" />
                 </div>
-
-                <div>
-                  <Label className="fieldLabel">Next action</Label>
-                  <Input
-                    value={nextAction}
-                    onChange={(e) => setNextAction(e.target.value)}
-                    placeholder="Planned next step"
-                    className="fieldInput"
-                  />
+                <div className="field-group">
+                  <Label className="field-label">NEXT-ACTION</Label>
+                  <Input value={nextAction} onChange={(e) => setNextAction(e.target.value)} className="nerv-input" />
                 </div>
-
-                <div>
-                  <Label className="fieldLabel">Part order</Label>
-                  <Textarea
-                    value={partOrder}
-                    onChange={(e) => setPartOrder(e.target.value)}
-                    placeholder="z. B. Cover - 5M11Q55940"
-                    className="fieldInput fieldTextarea font-mono"
-                  />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setPartsExpanded(!partsExpanded)}
-                    className="mt-1.5 text-[10px] bg-white/10 border border-white/20 hover:bg-white/20 text-white backdrop-blur-sm font-semibold h-7 px-2.5 clay-button"
-                  >
-                    Part-Optionen {partsExpanded ? '▲' : '▼'}
+                <div className="field-group">
+                  <Label className="field-label">PART-ORDER</Label>
+                  <Textarea value={partOrder} onChange={(e) => setPartOrder(e.target.value)} className="nerv-textarea mono" />
+                  <Button variant="ghost" size="sm" onClick={() => setPartsExpanded(!partsExpanded)} className="nerv-btn-toggle">
+                    PART-SELECT {partsExpanded ? '▲' : '▼'}
                   </Button>
                 </div>
-
-                {partsExpanded && (
-                  <PartChips 
-                    partOrder={partOrder} 
-                    setPartOrder={setPartOrder} 
-                    denseMode={denseMode}
-                  />
-                )}
+                {partsExpanded && <PartChips partOrder={partOrder} setPartOrder={setPartOrder} denseMode={denseMode} />}
               </div>
             )}
           </div>
 
           {/* Section 3: CE ON-SITE TS */}
-          <div className="sectionBox">
+          <div className="nerv-panel">
             <SectionHeader 
               title="CE ON-SITE TS" 
               expanded={ceOnSiteExpanded} 
               setExpanded={setCeOnSiteExpanded}
             />
             {ceOnSiteExpanded && (
-              <div className="sectionContent">
-                <div>
-                  <Label className="fieldLabel">Min-conf</Label>
+              <div className="panel-content">
+                <div className="field-group">
+                  <Label className="field-label">MIN-CONF</Label>
                   <Select value={minConfTs} onValueChange={setMinConfTs}>
-                    <SelectTrigger className="fieldInput">
+                    <SelectTrigger className="nerv-select">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#2a2d3a] border-white/30">
-                      <SelectItem value="No" className="text-white focus:bg-white/20 focus:text-white">No</SelectItem>
-                      <SelectItem value="Yes" className="text-white focus:bg-white/20 focus:text-white">Yes</SelectItem>
+                    <SelectContent className="nerv-dropdown">
+                      <SelectItem value="No" className="nerv-option">NO</SelectItem>
+                      <SelectItem value="Yes" className="nerv-option">YES</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-
-                <div>
-                  <Label className="fieldLabel">TS-Suche</Label>
-                  <Input
-                    value={tsSearch}
-                    onChange={(e) => setTsSearch(e.target.value)}
-                    placeholder="z. B. RAM, SSD, Battery…"
-                    className="fieldInput"
-                  />
+                <div className="field-group">
+                  <Label className="field-label">TS-SEARCH</Label>
+                  <Input value={tsSearch} onChange={(e) => setTsSearch(e.target.value)} placeholder="RAM, SSD..." className="nerv-input" />
                 </div>
-
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setTsExpanded(!tsExpanded)}
-                  className="text-[10px] bg-white/10 border border-white/20 hover:bg-white/20 text-white backdrop-blur-sm font-semibold h-7 px-2.5 clay-button w-full"
-                >
-                  TS-Optionen {tsExpanded ? '▲' : '▼'}
+                <Button variant="ghost" size="sm" onClick={() => setTsExpanded(!tsExpanded)} className="nerv-btn-toggle full">
+                  TS-OPTIONS {tsExpanded ? '▲' : '▼'}
                 </Button>
-
-                {tsExpanded && (
-                  <TSChips
-                    selectedTs={selectedTs}
-                    setSelectedTs={setSelectedTs}
-                    tsSearch={tsSearch}
-                    denseMode={denseMode}
-                  />
-                )}
-
-                <div>
-                  <Label className="fieldLabel">Weitere TS-Details</Label>
-                  <Textarea
-                    value={additionalTsDetails}
-                    onChange={(e) => setAdditionalTsDetails(e.target.value)}
-                    placeholder="Optional: zusätzliche Details..."
-                    className="fieldInput fieldTextarea"
-                  />
+                {tsExpanded && <TSChips selectedTs={selectedTs} setSelectedTs={setSelectedTs} tsSearch={tsSearch} denseMode={denseMode} />}
+                <div className="field-group">
+                  <Label className="field-label">TS-DETAILS</Label>
+                  <Textarea value={additionalTsDetails} onChange={(e) => setAdditionalTsDetails(e.target.value)} className="nerv-textarea" />
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Premier Support Section - Full Width */}
-        <div className="mt-3">
-          <div className={`backdrop-blur-xl bg-white/5 rounded-xl border border-white/10 shadow-2xl transition-all duration-300 ${denseMode ? 'p-2.5' : 'p-3'} clay-panel`}>
-            <SectionHeader 
-              title="PREMIER - SUPPORT TEMPLATE" 
-              expanded={premierExpanded} 
-              setExpanded={setPremierExpanded}
-            />
-            {premierExpanded && (
-              <div className={`pt-1 space-y-${denseMode ? '1.5' : '2'}`}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div>
-                    <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">Model description</Label>
-                    <Input
-                      id="modelDescription"
-                      value={modelDescription}
-                      onChange={(e) => setModelDescription(e.target.value)}
-                      placeholder="e.g. T14s G3"
-                      className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'h-7 text-xs' : 'h-8 text-sm'} focus:border-[#E1251B] transition-all clay-input`}
-                    />
-                  </div>
-
-                  <div>
-                    <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">Options</Label>
-                    <div className="space-y-2">
-                      <div className="flex items-start gap-2">
-                        <Checkbox
-                          id="sporadicAllParts"
-                          checked={sporadicAllParts}
-                          onCheckedChange={setSporadicAllParts}
-                          className="border-gray-500 mt-0.5 data-[state=checked]:bg-[#E1251B] data-[state=checked]:border-[#E1251B]"
-                        />
-                        <Label htmlFor="sporadicAllParts" className="text-[10px] leading-tight cursor-pointer text-gray-300">
-                          Sporadic problem, replace ALL ordered parts under all circumstances
-                        </Label>
-                      </div>
-
-                      <div className="flex items-start gap-2">
-                        <Checkbox
-                          id="moreThan4Parts"
-                          checked={moreThan4Parts}
-                          onCheckedChange={setMoreThan4Parts}
-                          className="border-gray-500 mt-0.5 data-[state=checked]:bg-[#E1251B] data-[state=checked]:border-[#E1251B]"
-                        />
-                        <Label htmlFor="moreThan4Parts" className="text-[10px] leading-tight cursor-pointer text-gray-300">
-                          Add '&gt;4 parts' justification block
-                        </Label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">NOTE for sporadic problem</Label>
-                  <Textarea
-                    id="sporadicNote"
-                    value={sporadicNote}
-                    onChange={(e) => setSporadicNote(e.target.value)}
-                    placeholder="Optional note..."
-                    className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'min-h-[40px] text-xs' : 'min-h-[50px] text-sm'} focus:border-[#E1251B] transition-all clay-input`}
-                  />
-                </div>
-
-                {moreThan4Parts && (
-                  <div id="whyMoreThan4Wrap">
-                    <Label className="text-[10px] mb-1 block text-gray-400 uppercase tracking-wider">Why are more than 4 parts needed</Label>
-                    <Textarea
-                      id="whyMoreThan4"
-                      value={whyMoreThan4}
-                      onChange={(e) => setWhyMoreThan4(e.target.value)}
-                      placeholder="Reason for more than 4 parts"
-                      className={`bg-black/30 border-white/10 backdrop-blur-sm text-white ${denseMode ? 'min-h-[40px] text-xs' : 'min-h-[50px] text-sm'} focus:border-[#E1251B] transition-all clay-input`}
-                    />
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Multi-Output Section */}
-        <div className="mt-3">
-          <MultiOutput
-            outputs={outputs}
-            onGenerate={handleGenerate}
-            onClearPane={handleClearPane}
-            denseMode={denseMode}
+        {/* Premier Section */}
+        <div className="nerv-panel full-width">
+          <SectionHeader 
+            title="PREMIER-SUPPORT TEMPLATE" 
+            expanded={premierExpanded} 
+            setExpanded={setPremierExpanded}
           />
+          {premierExpanded && (
+            <div className="panel-content">
+              <div className="premier-grid">
+                <div className="field-group">
+                  <Label className="field-label">MODEL-DESC</Label>
+                  <Input value={modelDescription} onChange={(e) => setModelDescription(e.target.value)} placeholder="T14S G3" className="nerv-input" />
+                </div>
+                <div className="options-group">
+                  <Label className="field-label">OPTIONS</Label>
+                  <div className="field-checkbox">
+                    <Checkbox id="sporadicAllParts" checked={sporadicAllParts} onCheckedChange={setSporadicAllParts} className="nerv-checkbox" />
+                    <Label htmlFor="sporadicAllParts" className="checkbox-label">SPORADIC: REPLACE ALL</Label>
+                  </div>
+                  <div className="field-checkbox">
+                    <Checkbox id="moreThan4Parts" checked={moreThan4Parts} onCheckedChange={setMoreThan4Parts} className="nerv-checkbox" />
+                    <Label htmlFor="moreThan4Parts" className="checkbox-label">&gt;4 PARTS BLOCK</Label>
+                  </div>
+                </div>
+              </div>
+              <div className="field-group">
+                <Label className="field-label">SPORADIC-NOTE</Label>
+                <Textarea value={sporadicNote} onChange={(e) => setSporadicNote(e.target.value)} className="nerv-textarea" />
+              </div>
+              {moreThan4Parts && (
+                <div className="field-group">
+                  <Label className="field-label">WHY &gt;4 PARTS</Label>
+                  <Textarea value={whyMoreThan4} onChange={(e) => setWhyMoreThan4(e.target.value)} className="nerv-textarea" />
+                </div>
+              )}
+            </div>
+          )}
         </div>
+
+        {/* Output Section */}
+        <MultiOutput outputs={outputs} onGenerate={handleGenerate} onClearPane={handleClearPane} denseMode={denseMode} />
       </div>
 
       <style jsx>{`
-        /* ========== UNIFIED SECTIONS GRID ========== */
+        .nerv-container {
+          min-height: 100vh;
+          background: linear-gradient(135deg, #050810 0%, #0a0e1a 50%, #0d1117 100%);
+          color: #a0a8b0;
+          font-family: 'Roboto Mono', 'Courier New', monospace;
+          position: relative;
+          overflow-x: hidden;
+        }
+
+        /* Scan overlay */
+        .scan-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 2px;
+          background: linear-gradient(90deg, transparent, rgba(180, 255, 50, 0.6), transparent);
+          animation: scan 4s linear infinite;
+          pointer-events: none;
+          z-index: 100;
+        }
+
+        @keyframes scan {
+          0% { transform: translateY(0); opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        /* Noise overlay */
+        .noise-overlay {
+          position: fixed;
+          inset: 0;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+          pointer-events: none;
+          z-index: 99;
+          opacity: 0.4;
+        }
+
+        /* Top Bar */
+        .nerv-topbar {
+          position: sticky;
+          top: 0;
+          z-index: 50;
+          background: rgba(5, 8, 16, 0.95);
+          border-bottom: 1px solid rgba(180, 255, 50, 0.2);
+          box-shadow: 0 1px 0 rgba(180, 255, 50, 0.1), 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .topbar-inner {
+          max-width: 1600px;
+          margin: 0 auto;
+          padding: 8px 16px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .logo-section {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+        }
+
+        .logo-img {
+          height: 28px;
+          object-fit: contain;
+          filter: brightness(1.2) contrast(1.1);
+        }
+
+        .telemetry {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 4px 12px;
+          background: rgba(20, 25, 35, 0.8);
+          border: 1px solid rgba(180, 255, 50, 0.3);
+          clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+        }
+
+        .telem-label {
+          font-size: 9px;
+          color: rgba(180, 255, 50, 0.6);
+          letter-spacing: 1px;
+        }
+
+        .telem-value {
+          font-size: 11px;
+          color: #b4ff32;
+          font-weight: 700;
+          letter-spacing: 0.5px;
+        }
+
+        .controls-section {
+          display: flex;
+          gap: 12px;
+          align-items: center;
+        }
+
+        .mode-toggle {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 4px 10px;
+          background: rgba(20, 25, 35, 0.6);
+          border: 1px solid rgba(100, 150, 200, 0.3);
+        }
+
+        .mode-label {
+          font-size: 10px;
+          color: rgba(100, 200, 255, 0.9);
+          letter-spacing: 1px;
+          cursor: pointer;
+          user-select: none;
+        }
+
+        .nerv-checkbox {
+          border-color: rgba(100, 200, 255, 0.5);
+        }
+
+        .nerv-checkbox[data-state="checked"] {
+          background: #b4ff32;
+          border-color: #b4ff32;
+        }
+
+        .nerv-btn-secondary {
+          background: rgba(30, 35, 45, 0.9);
+          border: 1px solid rgba(100, 150, 200, 0.4);
+          color: rgba(100, 200, 255, 0.9);
+          font-size: 10px;
+          font-weight: 600;
+          letter-spacing: 1px;
+          height: 28px;
+          padding: 0 14px;
+          transition: all 0.15s;
+        }
+
+        .nerv-btn-secondary:hover {
+          background: rgba(100, 200, 255, 0.15);
+          border-color: rgba(100, 200, 255, 0.7);
+          color: #64c8ff;
+        }
+
+        /* Main Content */
+        .nerv-main {
+          max-width: 1600px;
+          margin: 0 auto;
+          padding: 16px;
+        }
+
+        /* Grid Layout */
         .sections-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
           gap: 14px;
           margin-bottom: 14px;
         }
-        
+
         @media (max-width: 1100px) {
           .sections-grid {
             grid-template-columns: 1fr;
           }
         }
-        
-        /* ========== UNIFIED SECTION BOX ========== */
-        .sectionBox {
-          backdrop-filter: blur(20px);
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 12px;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          box-shadow: 
-            0 8px 32px rgba(0, 0, 0, 0.4),
-            inset 2px 2px 4px rgba(255, 255, 255, 0.03),
-            inset -2px -2px 4px rgba(0, 0, 0, 0.3);
-          padding: ${denseMode ? '10px' : '12px'};
-          transition: all 0.3s ease;
+
+        /* Panel */
+        .nerv-panel {
+          background: linear-gradient(135deg, rgba(10, 15, 25, 0.95) 0%, rgba(15, 20, 30, 0.95) 100%);
+          border: 1px solid rgba(180, 255, 50, 0.2);
+          position: relative;
           min-height: 200px;
+          transition: all 0.2s;
+        }
+
+        .nerv-panel:hover {
+          border-color: rgba(180, 255, 50, 0.4);
+          box-shadow: 0 0 20px rgba(180, 255, 50, 0.1);
+        }
+
+        .nerv-panel.full-width {
+          grid-column: 1 / -1;
+        }
+
+        /* Section Header */
+        .nerv-section-header {
+          width: 100%;
+          padding: 10px 14px;
+          background: rgba(5, 10, 20, 0.8);
+          border-bottom: 1px solid rgba(180, 255, 50, 0.3);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: relative;
+          cursor: pointer;
+          transition: all 0.15s;
+        }
+
+        .nerv-section-header:hover {
+          background: rgba(10, 15, 25, 0.9);
+        }
+
+        .corner-brackets {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+        }
+
+        .bracket {
+          position: absolute;
+          width: 12px;
+          height: 12px;
+          border-color: #b4ff32;
+        }
+
+        .bracket.tl {
+          top: 0;
+          left: 0;
+          border-top: 2px solid;
+          border-left: 2px solid;
+        }
+
+        .bracket.tr {
+          top: 0;
+          right: 0;
+          border-top: 2px solid;
+          border-right: 2px solid;
+        }
+
+        .bracket.bl {
+          bottom: 0;
+          left: 0;
+          border-bottom: 2px solid;
+          border-left: 2px solid;
+        }
+
+        .bracket.br {
+          bottom: 0;
+          right: 0;
+          border-bottom: 2px solid;
+          border-right: 2px solid;
+        }
+
+        .nerv-section-header .title {
+          font-size: 11px;
+          font-weight: 700;
+          color: #b4ff32;
+          letter-spacing: 2px;
+          text-shadow: 0 0 8px rgba(180, 255, 50, 0.5);
+        }
+
+        .nerv-section-header .chevron {
+          width: 14px;
+          height: 14px;
+          color: rgba(100, 200, 255, 0.7);
+          transition: transform 0.2s;
+        }
+
+        /* Panel Content */
+        .panel-content {
+          padding: 14px;
           display: flex;
           flex-direction: column;
+          gap: 12px;
+          animation: fadeIn 0.3s;
         }
-        
-        .sectionBox:hover {
-          box-shadow: 
-            0 12px 40px rgba(0, 0, 0, 0.5),
-            inset 2px 2px 4px rgba(255, 255, 255, 0.04),
-            inset -2px -2px 4px rgba(0, 0, 0, 0.35);
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-4px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-        
-        /* ========== UNIFIED SECTION CONTENT ========== */
-        .sectionContent {
+
+        /* Field Group */
+        .field-group {
           display: flex;
           flex-direction: column;
-          gap: ${denseMode ? '10px' : '12px'};
-          padding-top: 8px;
-          animation: slideDown 0.3s ease;
+          gap: 4px;
         }
-        
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+
+        .field-label {
+          font-size: 9px;
+          color: rgba(100, 200, 255, 0.7);
+          letter-spacing: 1.5px;
+          font-weight: 600;
         }
-        
-        /* ========== UNIFIED FIELD LABELS ========== */
-        .fieldLabel {
-          font-size: 10px;
-          margin-bottom: 4px;
-          display: block;
-          color: rgba(156, 163, 175, 1);
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-          font-weight: 500;
+
+        .nerv-input, .nerv-select, .nerv-textarea {
+          background: rgba(5, 10, 20, 0.8);
+          border: 1px solid rgba(100, 150, 200, 0.3);
+          color: #c0c8d0;
+          font-family: 'Roboto Mono', monospace;
+          font-size: 12px;
+          padding: 6px 10px;
+          height: auto;
+          transition: all 0.15s;
         }
-        
-        /* ========== UNIFIED FIELD INPUTS ========== */
-        .fieldInput {
-          background: rgba(0, 0, 0, 0.3);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          backdrop-filter: blur(8px);
-          color: white;
-          height: ${denseMode ? '28px' : '32px'};
-          font-size: ${denseMode ? '12px' : '14px'};
-          transition: all 0.2s ease;
-          border-radius: 6px;
-          padding: 0 12px;
+
+        .nerv-input {
+          height: 32px;
         }
-        
-        .fieldInput:focus {
-          border-color: #E1251B;
-          box-shadow: 
-            inset 1px 1px 2px rgba(0, 0, 0, 0.4),
-            0 0 0 2px rgba(225, 37, 27, 0.2);
-          outline: none;
-        }
-        
-        .fieldTextarea {
-          min-height: ${denseMode ? '45px' : '55px'};
-          padding: 8px 12px;
+
+        .nerv-textarea {
+          min-height: 60px;
           resize: vertical;
+          line-height: 1.4;
         }
-        
-        /* ========== DENSE MODE ADJUSTMENTS ========== */
-        .dense .space-y-2\.5 > * + * {
-          margin-top: 0.375rem;
+
+        .nerv-textarea.mono {
+          font-size: 11px;
         }
-        .dense .space-y-2 > * + * {
-          margin-top: 0.25rem;
+
+        .nerv-input:focus, .nerv-select:focus, .nerv-textarea:focus {
+          outline: none;
+          border-color: #b4ff32;
+          box-shadow: 0 0 0 1px rgba(180, 255, 50, 0.3), 0 0 12px rgba(180, 255, 50, 0.2);
+          background: rgba(10, 15, 25, 0.9);
         }
-        .dense .space-y-1\.5 > * + * {
-          margin-top: 0.25rem;
+
+        .nerv-input::placeholder, .nerv-textarea::placeholder {
+          color: rgba(160, 168, 176, 0.4);
+          font-size: 11px;
         }
-        
-        /* ========== CLAYMORPHISM EFFECTS ========== */
-        .clay-panel {
-          box-shadow: 
-            inset 2px 2px 4px rgba(255, 255, 255, 0.03),
-            inset -2px -2px 4px rgba(0, 0, 0, 0.3);
+
+        .nerv-dropdown {
+          background: rgba(15, 20, 30, 0.98);
+          border: 1px solid rgba(180, 255, 50, 0.4);
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
         }
-        
-        .clay-input:focus {
-          box-shadow: 
-            inset 1px 1px 2px rgba(0, 0, 0, 0.4),
-            0 0 0 2px rgba(225, 37, 27, 0.2);
+
+        .nerv-option {
+          color: #c0c8d0;
+          font-size: 11px;
+          letter-spacing: 0.5px;
         }
-        
-        .clay-button {
-          box-shadow: 
-            2px 2px 4px rgba(0, 0, 0, 0.3),
-            -1px -1px 2px rgba(255, 255, 255, 0.03);
+
+        .nerv-option:focus {
+          background: rgba(180, 255, 50, 0.15);
+          color: #b4ff32;
         }
-        
-        .clay-button:hover {
-          box-shadow: 
-            inset 1px 1px 2px rgba(0, 0, 0, 0.3),
-            1px 1px 2px rgba(255, 255, 255, 0.02);
+
+        /* Checkbox Field */
+        .field-checkbox {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding-top: 4px;
         }
-        
-        .clay-button:active {
-          box-shadow: 
-            inset 2px 2px 4px rgba(0, 0, 0, 0.4);
+
+        .checkbox-label {
+          font-size: 9px;
+          color: rgba(160, 168, 176, 0.9);
+          letter-spacing: 0.5px;
+          cursor: pointer;
+          line-height: 1.3;
         }
-        
-        .clay-button-primary {
-          box-shadow: 
-            3px 3px 6px rgba(0, 0, 0, 0.4),
-            -1px -1px 3px rgba(255, 255, 255, 0.05),
-            0 0 20px rgba(225, 37, 27, 0.3);
+
+        /* Button Toggle */
+        .nerv-btn-toggle {
+          background: rgba(30, 35, 45, 0.6);
+          border: 1px solid rgba(100, 150, 200, 0.3);
+          color: rgba(100, 200, 255, 0.9);
+          font-size: 9px;
+          font-weight: 600;
+          letter-spacing: 1px;
+          height: 26px;
+          padding: 0 12px;
+          margin-top: 4px;
+          transition: all 0.15s;
         }
-        
-        .clay-button-primary:hover {
-          box-shadow: 
-            2px 2px 4px rgba(0, 0, 0, 0.5),
-            0 0 25px rgba(225, 37, 27, 0.4);
+
+        .nerv-btn-toggle:hover {
+          background: rgba(100, 200, 255, 0.1);
+          border-color: rgba(100, 200, 255, 0.5);
         }
-        
-        .clay-output {
-          box-shadow: 
-            inset 3px 3px 6px rgba(0, 0, 0, 0.5),
-            inset -1px -1px 2px rgba(255, 255, 255, 0.02);
+
+        .nerv-btn-toggle.full {
+          width: 100%;
         }
-        
-        @media (prefers-reduced-motion: reduce) {
-          .animate-pulse {
-            animation: none;
+
+        /* Premier Grid */
+        .premier-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 14px;
+        }
+
+        @media (max-width: 768px) {
+          .premier-grid {
+            grid-template-columns: 1fr;
           }
-          * {
-            transition-duration: 0.01ms !important;
-          }
+        }
+
+        .options-group {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
         }
       `}</style>
     </div>

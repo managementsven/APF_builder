@@ -2,26 +2,26 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 
 const PARTS = [
-  { key: 'mb_planar', label: 'MB/Planar' },
+  { key: 'mb_planar', label: 'MB/PLANAR' },
   { key: 'ram', label: 'RAM', promptQty: true },
   { key: 'ssd', label: 'SSD', promptQty: true },
-  { key: 'speaker', label: 'Speaker' },
-  { key: 'c_cover', label: 'C-Cover' },
-  { key: 'a_cover', label: 'A-Cover' },
-  { key: 'b_cover', label: 'B-Cover' },
-  { key: 'd_cover', label: 'D-Cover' },
-  { key: 'edp_cable', label: 'EDP-Cable' },
-  { key: 'speaker_cable', label: 'Speaker-Cable' },
-  { key: 'subboard', label: 'Subboard' },
+  { key: 'speaker', label: 'SPEAKER' },
+  { key: 'c_cover', label: 'C-COVER' },
+  { key: 'a_cover', label: 'A-COVER' },
+  { key: 'b_cover', label: 'B-COVER' },
+  { key: 'd_cover', label: 'D-COVER' },
+  { key: 'edp_cable', label: 'EDP-CABLE' },
+  { key: 'speaker_cable', label: 'SPK-CABLE' },
+  { key: 'subboard', label: 'SUBBOARD' },
   { key: 'dc_in', label: 'DC-IN' },
   { key: 'cmos', label: 'CMOS' },
-  { key: 'battery', label: 'Battery' },
+  { key: 'battery', label: 'BATTERY' },
   { key: 'lcd', label: 'LCD' },
-  { key: 'lcd_cable', label: 'LCD-Cable' },
+  { key: 'lcd_cable', label: 'LCD-CABLE' },
   { key: 'tp', label: 'TP' },
-  { key: 'tp_cable', label: 'TP-Cable' },
-  { key: 'keyboard', label: 'Keyboard' },
-  { key: 'c_cover_keyboard', label: 'C-Cover+Keyboard' },
+  { key: 'tp_cable', label: 'TP-CABLE' },
+  { key: 'keyboard', label: 'KEYBOARD' },
+  { key: 'c_cover_keyboard', label: 'C-CVR+KB' },
   { key: 'psu', label: 'PSU' },
   { key: 'dock', label: 'DOCK' },
 ];
@@ -35,9 +35,9 @@ export default function PartChips({ partOrder, setPartOrder, denseMode }) {
       if (match) {
         const label = match[1].trim();
         const qty = parseInt(match[2], 10);
-        const part = PARTS.find(p => p.label === label);
+        const part = PARTS.find(p => p.label.toLowerCase() === label.toLowerCase());
         if (part) {
-          map[part.key] = { label, qty };
+          map[part.key] = { label: part.label, qty };
         }
       }
     });
@@ -58,10 +58,9 @@ export default function PartChips({ partOrder, setPartOrder, denseMode }) {
     const map = parsePartOrder();
     
     if (map[part.key]) {
-      // Part exists - update or remove
       if (part.promptQty) {
         const currentQty = map[part.key].qty;
-        const newQty = prompt(`Enter quantity for ${part.label}:`, currentQty);
+        const newQty = prompt(`ENTER QUANTITY FOR ${part.label}:`, currentQty);
         if (newQty !== null) {
           const qty = parseInt(newQty, 10);
           if (qty > 0) {
@@ -72,9 +71,8 @@ export default function PartChips({ partOrder, setPartOrder, denseMode }) {
         }
       }
     } else {
-      // Part doesn't exist - add it
       if (part.promptQty) {
-        const qty = prompt(`Enter quantity for ${part.label}:`, '1');
+        const qty = prompt(`ENTER QUANTITY FOR ${part.label}:`, '1');
         if (qty !== null) {
           const qtyNum = parseInt(qty, 10);
           if (qtyNum > 0) {
@@ -103,8 +101,8 @@ export default function PartChips({ partOrder, setPartOrder, denseMode }) {
   };
 
   return (
-    <div className={`${denseMode ? 'mt-1.5' : 'mt-2'}`}>
-      <div className={`grid grid-cols-3 sm:grid-cols-4 ${denseMode ? 'gap-1' : 'gap-1.5'}`}>
+    <div className="part-chips-container">
+      <div className="part-chips-grid">
         {PARTS.map(part => (
           <Button
             key={part.key}
@@ -112,22 +110,58 @@ export default function PartChips({ partOrder, setPartOrder, denseMode }) {
             size="sm"
             onClick={() => handleChipClick(part)}
             onDoubleClick={() => handleChipDoubleClick(part)}
-            role="button"
-            aria-pressed={isSelected(part.key)}
-            title={part.label}
-            className={`
-              ${denseMode ? 'h-6 px-1.5 text-[10px]' : 'h-7 px-2 text-[11px]'}
-              border-white/10 hover:bg-white/10 transition-all backdrop-blur-sm font-medium
-              ${isSelected(part.key) 
-                ? 'bg-gradient-to-r from-[#E1251B] to-[#c51f17] border-[#E1251B] text-white hover:from-[#c51f17] hover:to-[#a01915] shadow-lg shadow-[#E1251B]/30' 
-                : 'bg-white/5'
-              }
-            `}
+            className={`part-chip ${isSelected(part.key) ? 'selected' : ''}`}
           >
             {part.label}
           </Button>
         ))}
       </div>
+
+      <style jsx>{`
+        .part-chips-container {
+          margin-top: 8px;
+          padding: 10px;
+          background: rgba(5, 10, 20, 0.6);
+          border: 1px solid rgba(100, 150, 200, 0.2);
+        }
+
+        .part-chips-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+          gap: 6px;
+        }
+
+        .part-chip {
+          background: rgba(30, 35, 45, 0.7);
+          border: 1px solid rgba(100, 150, 200, 0.3);
+          color: rgba(100, 200, 255, 0.8);
+          font-size: 8px;
+          font-weight: 600;
+          letter-spacing: 0.5px;
+          height: 26px;
+          padding: 0 8px;
+          transition: all 0.15s;
+          text-transform: uppercase;
+        }
+
+        .part-chip:hover {
+          background: rgba(100, 200, 255, 0.1);
+          border-color: rgba(100, 200, 255, 0.5);
+          color: #64c8ff;
+        }
+
+        .part-chip.selected {
+          background: linear-gradient(135deg, rgba(180, 255, 50, 0.25) 0%, rgba(150, 220, 40, 0.25) 100%);
+          border-color: #b4ff32;
+          color: #b4ff32;
+          box-shadow: 0 0 12px rgba(180, 255, 50, 0.3);
+        }
+
+        .part-chip.selected:hover {
+          background: linear-gradient(135deg, rgba(180, 255, 50, 0.35) 0%, rgba(150, 220, 40, 0.35) 100%);
+          box-shadow: 0 0 16px rgba(180, 255, 50, 0.4);
+        }
+      `}</style>
     </div>
   );
 }
