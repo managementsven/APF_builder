@@ -428,41 +428,49 @@ ${whyMoreThan4}`;
       <style jsx>{`
         .nerv-container {
           min-height: 100vh;
-          background: linear-gradient(135deg, #050810 0%, #0a0e1a 50%, #0d1117 100%);
-          color: #a0a8b0;
+          background: radial-gradient(ellipse at center, #0d1117 0%, #050810 100%);
+          color: #8a9199;
           font-family: 'Roboto Mono', 'Courier New', monospace;
           position: relative;
           overflow-x: hidden;
         }
 
-        /* Scan overlay */
-        .scan-overlay {
+        .nerv-container::before {
+          content: '';
           position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 2px;
-          background: linear-gradient(90deg, transparent, rgba(180, 255, 50, 0.6), transparent);
-          animation: scan 4s linear infinite;
+          inset: 0;
+          background-image: 
+            repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.015) 2px, rgba(255, 255, 255, 0.015) 4px),
+            repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255, 255, 255, 0.015) 2px, rgba(255, 255, 255, 0.015) 4px);
           pointer-events: none;
-          z-index: 100;
+          z-index: 1;
         }
 
-        @keyframes scan {
-          0% { transform: translateY(0); opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { transform: translateY(100vh); opacity: 0; }
+        .nerv-container::after {
+          content: '';
+          position: fixed;
+          inset: 0;
+          background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+          pointer-events: none;
+          z-index: 2;
         }
 
-        /* Noise overlay */
+        .scan-overlay {
+          display: none;
+        }
+
         .noise-overlay {
           position: fixed;
           inset: 0;
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.015'/%3E%3C/svg%3E");
           pointer-events: none;
-          z-index: 99;
-          opacity: 0.4;
+          z-index: 3;
+          animation: flicker 3s infinite;
+        }
+
+        @keyframes flicker {
+          0%, 100% { opacity: 0.015; }
+          50% { opacity: 0.012; }
         }
 
         /* Top Bar */
@@ -470,9 +478,10 @@ ${whyMoreThan4}`;
           position: sticky;
           top: 0;
           z-index: 50;
-          background: rgba(5, 8, 16, 0.95);
-          border-bottom: 1px solid rgba(180, 255, 50, 0.2);
-          box-shadow: 0 1px 0 rgba(180, 255, 50, 0.1), 0 4px 20px rgba(0, 0, 0, 0.5);
+          background: rgba(5, 8, 16, 0.98);
+          border-bottom: 1px solid rgba(120, 130, 140, 0.25);
+          box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03), 0 4px 20px rgba(0, 0, 0, 0.6);
+          backdrop-filter: blur(8px);
         }
 
         .topbar-inner {
@@ -501,20 +510,20 @@ ${whyMoreThan4}`;
           align-items: center;
           gap: 6px;
           padding: 4px 12px;
-          background: rgba(20, 25, 35, 0.8);
-          border: 1px solid rgba(180, 255, 50, 0.3);
-          clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+          background: rgba(15, 20, 28, 0.9);
+          border: 1px solid rgba(120, 130, 140, 0.3);
+          clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
         }
 
         .telem-label {
           font-size: 9px;
-          color: rgba(180, 255, 50, 0.6);
+          color: rgba(100, 200, 255, 0.5);
           letter-spacing: 1px;
         }
 
         .telem-value {
           font-size: 11px;
-          color: #b4ff32;
+          color: rgba(100, 200, 255, 0.9);
           font-weight: 700;
           letter-spacing: 0.5px;
         }
@@ -530,43 +539,43 @@ ${whyMoreThan4}`;
           align-items: center;
           gap: 8px;
           padding: 4px 10px;
-          background: rgba(20, 25, 35, 0.6);
-          border: 1px solid rgba(100, 150, 200, 0.3);
+          background: rgba(15, 20, 28, 0.8);
+          border: 1px solid rgba(100, 150, 200, 0.25);
         }
 
         .mode-label {
           font-size: 10px;
-          color: rgba(100, 200, 255, 0.9);
+          color: rgba(100, 200, 255, 0.7);
           letter-spacing: 1px;
           cursor: pointer;
           user-select: none;
         }
 
         .nerv-checkbox {
-          border-color: rgba(100, 200, 255, 0.5);
+          border-color: rgba(100, 200, 255, 0.4);
         }
 
         .nerv-checkbox[data-state="checked"] {
-          background: #b4ff32;
-          border-color: #b4ff32;
+          background: rgba(180, 255, 50, 0.9);
+          border-color: rgba(180, 255, 50, 0.9);
         }
 
         .nerv-btn-secondary {
-          background: rgba(30, 35, 45, 0.9);
-          border: 1px solid rgba(100, 150, 200, 0.4);
-          color: rgba(100, 200, 255, 0.9);
+          background: rgba(25, 30, 38, 0.9);
+          border: 1px solid rgba(120, 130, 140, 0.35);
+          color: rgba(100, 200, 255, 0.8);
           font-size: 10px;
           font-weight: 600;
           letter-spacing: 1px;
           height: 28px;
           padding: 0 14px;
-          transition: all 0.15s;
+          transition: all 0.12s;
         }
 
         .nerv-btn-secondary:hover {
-          background: rgba(100, 200, 255, 0.15);
-          border-color: rgba(100, 200, 255, 0.7);
-          color: #64c8ff;
+          background: rgba(25, 30, 38, 1);
+          border-color: rgba(100, 200, 255, 0.55);
+          color: rgba(100, 200, 255, 1);
         }
 
         /* Main Content */
@@ -574,6 +583,8 @@ ${whyMoreThan4}`;
           max-width: 1600px;
           margin: 0 auto;
           padding: 16px;
+          position: relative;
+          z-index: 10;
         }
 
         /* Grid Layout */
@@ -592,38 +603,49 @@ ${whyMoreThan4}`;
 
         /* Panel */
         .nerv-panel {
-          background: linear-gradient(135deg, rgba(10, 15, 25, 0.95) 0%, rgba(15, 20, 30, 0.95) 100%);
-          border: 1px solid rgba(180, 255, 50, 0.2);
+          background: rgba(12, 16, 22, 0.92);
+          border: 1px solid rgba(120, 130, 140, 0.22);
           position: relative;
           min-height: 200px;
-          transition: all 0.2s;
+          transition: border-color 0.15s;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02), 0 2px 8px rgba(0, 0, 0, 0.4);
         }
 
-        .nerv-panel:hover {
-          border-color: rgba(180, 255, 50, 0.4);
-          box-shadow: 0 0 20px rgba(180, 255, 50, 0.1);
+        .nerv-panel::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+          background-size: 16px 16px;
+          pointer-events: none;
+          opacity: 0.3;
+        }
+
+        .nerv-panel:focus-within {
+          border-color: rgba(120, 130, 140, 0.4);
         }
 
         .nerv-panel.full-width {
           grid-column: 1 / -1;
+          border-color: rgba(120, 130, 140, 0.28);
         }
 
         /* Section Header */
         .nerv-section-header {
           width: 100%;
           padding: 10px 14px;
-          background: rgba(5, 10, 20, 0.8);
-          border-bottom: 1px solid rgba(180, 255, 50, 0.3);
+          background: rgba(8, 12, 18, 0.85);
+          border-bottom: 1px solid rgba(120, 130, 140, 0.25);
           display: flex;
           align-items: center;
           justify-content: space-between;
           position: relative;
           cursor: pointer;
-          transition: all 0.15s;
+          transition: background 0.12s;
         }
 
         .nerv-section-header:hover {
-          background: rgba(10, 15, 25, 0.9);
+          background: rgba(12, 16, 22, 0.95);
         }
 
         .corner-brackets {
@@ -634,52 +656,51 @@ ${whyMoreThan4}`;
 
         .bracket {
           position: absolute;
-          width: 12px;
-          height: 12px;
-          border-color: #b4ff32;
+          width: 10px;
+          height: 10px;
+          border-color: rgba(100, 200, 255, 0.4);
         }
 
         .bracket.tl {
           top: 0;
           left: 0;
-          border-top: 2px solid;
-          border-left: 2px solid;
+          border-top: 1px solid;
+          border-left: 1px solid;
         }
 
         .bracket.tr {
           top: 0;
           right: 0;
-          border-top: 2px solid;
-          border-right: 2px solid;
+          border-top: 1px solid;
+          border-right: 1px solid;
         }
 
         .bracket.bl {
           bottom: 0;
           left: 0;
-          border-bottom: 2px solid;
-          border-left: 2px solid;
+          border-bottom: 1px solid;
+          border-left: 1px solid;
         }
 
         .bracket.br {
           bottom: 0;
           right: 0;
-          border-bottom: 2px solid;
-          border-right: 2px solid;
+          border-bottom: 1px solid;
+          border-right: 1px solid;
         }
 
         .nerv-section-header .title {
           font-size: 11px;
           font-weight: 700;
-          color: #b4ff32;
+          color: rgba(140, 150, 160, 0.95);
           letter-spacing: 2px;
-          text-shadow: 0 0 8px rgba(180, 255, 50, 0.5);
         }
 
         .nerv-section-header .chevron {
           width: 14px;
           height: 14px;
-          color: rgba(100, 200, 255, 0.7);
-          transition: transform 0.2s;
+          color: rgba(100, 200, 255, 0.5);
+          transition: transform 0.15s;
         }
 
         /* Panel Content */
@@ -705,20 +726,20 @@ ${whyMoreThan4}`;
 
         .field-label {
           font-size: 9px;
-          color: rgba(100, 200, 255, 0.7);
+          color: rgba(100, 200, 255, 0.55);
           letter-spacing: 1.5px;
           font-weight: 600;
         }
 
         .nerv-input, .nerv-select, .nerv-textarea {
-          background: rgba(5, 10, 20, 0.8);
-          border: 1px solid rgba(100, 150, 200, 0.3);
-          color: #c0c8d0;
+          background: rgba(8, 12, 18, 0.85);
+          border: 1px solid rgba(100, 150, 200, 0.25);
+          color: #b0b8c0;
           font-family: 'Roboto Mono', monospace;
           font-size: 12px;
           padding: 6px 10px;
           height: auto;
-          transition: all 0.15s;
+          transition: all 0.12s;
         }
 
         .nerv-input {
@@ -737,9 +758,9 @@ ${whyMoreThan4}`;
 
         .nerv-input:focus, .nerv-select:focus, .nerv-textarea:focus {
           outline: none;
-          border-color: #b4ff32;
-          box-shadow: 0 0 0 1px rgba(180, 255, 50, 0.3), 0 0 12px rgba(180, 255, 50, 0.2);
-          background: rgba(10, 15, 25, 0.9);
+          border-color: rgba(100, 200, 255, 0.5);
+          box-shadow: 0 0 0 1px rgba(100, 200, 255, 0.25);
+          background: rgba(10, 14, 20, 0.95);
         }
 
         .nerv-input::placeholder, .nerv-textarea::placeholder {
@@ -748,20 +769,20 @@ ${whyMoreThan4}`;
         }
 
         .nerv-dropdown {
-          background: rgba(15, 20, 30, 0.98);
-          border: 1px solid rgba(180, 255, 50, 0.4);
-          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+          background: rgba(12, 16, 22, 0.98);
+          border: 1px solid rgba(120, 130, 140, 0.4);
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
         }
 
         .nerv-option {
-          color: #c0c8d0;
+          color: #b0b8c0;
           font-size: 11px;
           letter-spacing: 0.5px;
         }
 
         .nerv-option:focus {
-          background: rgba(180, 255, 50, 0.15);
-          color: #b4ff32;
+          background: rgba(100, 200, 255, 0.12);
+          color: rgba(100, 200, 255, 0.95);
         }
 
         /* Checkbox Field */
@@ -782,21 +803,22 @@ ${whyMoreThan4}`;
 
         /* Button Toggle */
         .nerv-btn-toggle {
-          background: rgba(30, 35, 45, 0.6);
-          border: 1px solid rgba(100, 150, 200, 0.3);
-          color: rgba(100, 200, 255, 0.9);
+          background: rgba(25, 30, 38, 0.7);
+          border: 1px solid rgba(100, 150, 200, 0.25);
+          color: rgba(100, 200, 255, 0.75);
           font-size: 9px;
           font-weight: 600;
           letter-spacing: 1px;
           height: 26px;
           padding: 0 12px;
           margin-top: 4px;
-          transition: all 0.15s;
+          transition: all 0.12s;
         }
 
         .nerv-btn-toggle:hover {
-          background: rgba(100, 200, 255, 0.1);
-          border-color: rgba(100, 200, 255, 0.5);
+          background: rgba(25, 30, 38, 0.95);
+          border-color: rgba(100, 200, 255, 0.45);
+          color: rgba(100, 200, 255, 0.95);
         }
 
         .nerv-btn-toggle.full {

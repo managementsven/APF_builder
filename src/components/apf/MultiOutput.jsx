@@ -81,33 +81,44 @@ function OutputPane({ title, content, onClear, denseMode, show = true }) {
 
       <style jsx>{`
         .output-pane {
-          background: linear-gradient(135deg, rgba(10, 15, 25, 0.95) 0%, rgba(15, 20, 30, 0.95) 100%);
-          border: 1px solid rgba(180, 255, 50, 0.2);
+          background: rgba(12, 16, 22, 0.92);
+          border: 1px solid rgba(120, 130, 140, 0.28);
           display: flex;
           flex-direction: column;
           min-height: 200px;
-          transition: all 0.2s;
+          transition: border-color 0.15s;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02), 0 2px 8px rgba(0, 0, 0, 0.4);
         }
 
-        .output-pane:hover {
-          border-color: rgba(180, 255, 50, 0.4);
+        .output-pane::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+          background-size: 16px 16px;
+          pointer-events: none;
+          opacity: 0.3;
+        }
+
+        .output-pane:focus-within {
+          border-color: rgba(120, 130, 140, 0.45);
         }
 
         .output-header {
           width: 100%;
           padding: 10px 14px;
-          background: rgba(5, 10, 20, 0.8);
-          border-bottom: 1px solid rgba(180, 255, 50, 0.3);
+          background: rgba(8, 12, 18, 0.85);
+          border-bottom: 1px solid rgba(120, 130, 140, 0.25);
           display: flex;
           align-items: center;
           justify-content: space-between;
           position: relative;
           cursor: pointer;
-          transition: all 0.15s;
+          transition: background 0.12s;
         }
 
         .output-header:hover {
-          background: rgba(10, 15, 25, 0.9);
+          background: rgba(12, 16, 22, 0.95);
         }
 
         .corner-brackets-sm {
@@ -120,7 +131,7 @@ function OutputPane({ title, content, onClear, denseMode, show = true }) {
           position: absolute;
           width: 10px;
           height: 10px;
-          border-color: #b4ff32;
+          border-color: rgba(100, 200, 255, 0.4);
         }
 
         .bracket-sm.tl {
@@ -154,16 +165,15 @@ function OutputPane({ title, content, onClear, denseMode, show = true }) {
         .output-title {
           font-size: 10px;
           font-weight: 700;
-          color: #b4ff32;
+          color: rgba(140, 150, 160, 0.95);
           letter-spacing: 2px;
-          text-shadow: 0 0 8px rgba(180, 255, 50, 0.5);
         }
 
         .chevron-sm {
           width: 12px;
           height: 12px;
-          color: rgba(100, 200, 255, 0.7);
-          transition: transform 0.2s;
+          color: rgba(100, 200, 255, 0.5);
+          transition: transform 0.15s;
         }
 
         .output-controls {
@@ -171,29 +181,29 @@ function OutputPane({ title, content, onClear, denseMode, show = true }) {
           display: flex;
           gap: 8px;
           align-items: center;
-          background: rgba(5, 10, 20, 0.6);
-          border-bottom: 1px solid rgba(100, 150, 200, 0.2);
+          background: rgba(8, 12, 18, 0.7);
+          border-bottom: 1px solid rgba(100, 150, 200, 0.18);
         }
 
         .output-btn {
-          background: rgba(30, 35, 45, 0.8);
-          border: 1px solid rgba(100, 200, 255, 0.3);
-          color: rgba(100, 200, 255, 0.9);
+          background: rgba(25, 30, 38, 0.8);
+          border: 1px solid rgba(100, 200, 255, 0.25);
+          color: rgba(100, 200, 255, 0.75);
           font-size: 9px;
           font-weight: 600;
           letter-spacing: 1px;
           height: 26px;
           padding: 0 10px;
-          transition: all 0.15s;
+          transition: all 0.12s;
           display: flex;
           align-items: center;
           gap: 4px;
         }
 
         .output-btn:hover:not(:disabled) {
-          background: rgba(100, 200, 255, 0.15);
-          border-color: rgba(100, 200, 255, 0.6);
-          color: #64c8ff;
+          background: rgba(25, 30, 38, 1);
+          border-color: rgba(100, 200, 255, 0.45);
+          color: rgba(100, 200, 255, 0.95);
         }
 
         .output-btn:disabled {
@@ -216,7 +226,7 @@ function OutputPane({ title, content, onClear, denseMode, show = true }) {
 
         .output-display {
           flex: 1;
-          background: rgba(5, 10, 20, 0.9);
+          background: rgba(8, 12, 18, 0.92);
           border: none;
           padding: 14px;
           overflow: auto;
@@ -225,8 +235,15 @@ function OutputPane({ title, content, onClear, denseMode, show = true }) {
           font-family: 'Courier New', monospace;
           font-size: 11pt;
           line-height: 1.3;
-          color: #b0b8c0;
+          color: #a0a8b0;
           min-height: 350px;
+        }
+        
+        .output-display:empty::before {
+          content: 'AWAITING INPUT...';
+          color: rgba(120, 130, 140, 0.4);
+          font-size: 10px;
+          letter-spacing: 1px;
         }
       `}</style>
     </div>
@@ -263,8 +280,8 @@ export default function MultiOutput({ outputs, onGenerate, onClearPane, denseMod
         }
 
         .output-topbar {
-          background: rgba(5, 10, 20, 0.9);
-          border: 1px solid rgba(180, 255, 50, 0.3);
+          background: rgba(8, 12, 18, 0.92);
+          border: 1px solid rgba(120, 130, 140, 0.28);
           border-bottom: none;
           padding: 10px 14px;
           display: flex;
@@ -281,9 +298,8 @@ export default function MultiOutput({ outputs, onGenerate, onClearPane, denseMod
         .output-main-title {
           font-size: 11px;
           font-weight: 700;
-          color: #b4ff32;
+          color: rgba(140, 150, 160, 0.95);
           letter-spacing: 2px;
-          text-shadow: 0 0 8px rgba(180, 255, 50, 0.5);
         }
 
         .status-indicator {
@@ -291,53 +307,54 @@ export default function MultiOutput({ outputs, onGenerate, onClearPane, denseMod
           align-items: center;
           gap: 6px;
           padding: 4px 10px;
-          background: rgba(20, 25, 35, 0.8);
-          border: 1px solid rgba(100, 200, 255, 0.3);
+          background: rgba(15, 20, 28, 0.9);
+          border: 1px solid rgba(100, 200, 255, 0.25);
         }
 
         .status-dot {
           width: 6px;
           height: 6px;
-          background: #64c8ff;
+          background: rgba(180, 255, 50, 0.9);
           border-radius: 50%;
-          box-shadow: 0 0 6px rgba(100, 200, 255, 0.8);
-          animation: pulse 2s infinite;
+          box-shadow: 0 0 4px rgba(180, 255, 50, 0.5);
+          animation: statusPulse 3s ease-in-out infinite;
         }
 
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.4; }
+        @keyframes statusPulse {
+          0%, 100% { opacity: 0.9; }
+          50% { opacity: 0.85; }
         }
 
         .status-text {
           font-size: 9px;
-          color: rgba(100, 200, 255, 0.9);
+          color: rgba(180, 255, 50, 0.85);
           letter-spacing: 1px;
           font-weight: 600;
         }
 
         .generate-btn {
-          background: linear-gradient(135deg, rgba(180, 255, 50, 0.9) 0%, rgba(150, 220, 40, 0.9) 100%);
-          border: 1px solid #b4ff32;
-          color: #0a0e1a;
+          background: rgba(180, 255, 50, 0.15);
+          border: 1px solid rgba(180, 255, 50, 0.5);
+          color: rgba(180, 255, 50, 0.95);
           font-size: 10px;
           font-weight: 700;
           letter-spacing: 1.5px;
           height: 32px;
           padding: 0 20px;
-          box-shadow: 0 0 20px rgba(180, 255, 50, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+          box-shadow: inset 0 1px 0 rgba(180, 255, 50, 0.1);
           transition: all 0.15s;
         }
 
         .generate-btn:hover {
-          background: linear-gradient(135deg, rgba(200, 255, 70, 1) 0%, rgba(180, 255, 50, 1) 100%);
-          box-shadow: 0 0 30px rgba(180, 255, 50, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5);
-          transform: translateY(-1px);
+          background: rgba(180, 255, 50, 0.22);
+          border-color: rgba(180, 255, 50, 0.7);
+          color: rgba(180, 255, 50, 1);
+          box-shadow: 0 0 16px rgba(180, 255, 50, 0.15), inset 0 1px 0 rgba(180, 255, 50, 0.15);
         }
 
         .generate-btn:active {
-          transform: translateY(0);
-          box-shadow: 0 0 15px rgba(180, 255, 50, 0.3);
+          background: rgba(180, 255, 50, 0.18);
+          box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         .btn-text {

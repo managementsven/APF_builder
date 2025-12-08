@@ -117,8 +117,8 @@ export default function TSChips({ selectedTs, setSelectedTs, tsSearch, denseMode
         .ts-chips-container {
           margin-top: 8px;
           padding: 10px;
-          background: rgba(5, 10, 20, 0.6);
-          border: 1px solid rgba(100, 150, 200, 0.2);
+          background: rgba(8, 12, 18, 0.7);
+          border: 1px solid rgba(100, 150, 200, 0.18);
         }
 
         .ts-controls {
@@ -128,21 +128,21 @@ export default function TSChips({ selectedTs, setSelectedTs, tsSearch, denseMode
         }
 
         .ts-ctrl-btn {
-          background: rgba(30, 35, 45, 0.8);
-          border: 1px solid rgba(100, 200, 255, 0.3);
-          color: rgba(100, 200, 255, 0.9);
+          background: rgba(25, 30, 38, 0.8);
+          border: 1px solid rgba(100, 200, 255, 0.25);
+          color: rgba(100, 200, 255, 0.75);
           font-size: 8px;
           font-weight: 600;
           letter-spacing: 1px;
           height: 24px;
           padding: 0 10px;
-          transition: all 0.15s;
+          transition: all 0.12s;
         }
 
         .ts-ctrl-btn:hover {
-          background: rgba(100, 200, 255, 0.15);
-          border-color: rgba(100, 200, 255, 0.6);
-          color: #64c8ff;
+          background: rgba(25, 30, 38, 1);
+          border-color: rgba(100, 200, 255, 0.45);
+          color: rgba(100, 200, 255, 0.95);
         }
 
         .ts-chips-grid {
@@ -159,48 +159,47 @@ export default function TSChips({ selectedTs, setSelectedTs, tsSearch, denseMode
         }
 
         .ts-chips-grid::-webkit-scrollbar-track {
-          background: rgba(20, 25, 35, 0.5);
+          background: rgba(15, 20, 28, 0.6);
         }
 
         .ts-chips-grid::-webkit-scrollbar-thumb {
-          background: rgba(100, 200, 255, 0.3);
+          background: rgba(100, 200, 255, 0.25);
           border-radius: 3px;
         }
 
         .ts-chips-grid::-webkit-scrollbar-thumb:hover {
-          background: rgba(100, 200, 255, 0.5);
+          background: rgba(100, 200, 255, 0.4);
         }
 
         .ts-chip {
-          background: rgba(30, 35, 45, 0.7);
-          border: 1px solid rgba(100, 150, 200, 0.3);
-          color: rgba(100, 200, 255, 0.8);
+          background: rgba(25, 30, 38, 0.8);
+          border: 1px solid rgba(100, 150, 200, 0.25);
+          color: rgba(100, 200, 255, 0.7);
           font-size: 8px;
           font-weight: 600;
           letter-spacing: 0.3px;
           height: 28px;
           padding: 0 8px;
-          transition: all 0.15s;
+          transition: all 0.12s;
           text-align: left;
           justify-content: flex-start;
         }
 
         .ts-chip:hover {
-          background: rgba(100, 200, 255, 0.1);
-          border-color: rgba(100, 200, 255, 0.5);
-          color: #64c8ff;
+          background: rgba(25, 30, 38, 1);
+          border-color: rgba(100, 200, 255, 0.4);
+          color: rgba(100, 200, 255, 0.9);
         }
 
         .ts-chip.selected {
-          background: linear-gradient(135deg, rgba(180, 255, 50, 0.25) 0%, rgba(150, 220, 40, 0.25) 100%);
-          border-color: #b4ff32;
-          color: #b4ff32;
-          box-shadow: 0 0 12px rgba(180, 255, 50, 0.3);
+          background: rgba(180, 255, 50, 0.12);
+          border-color: rgba(180, 255, 50, 0.5);
+          color: rgba(180, 255, 50, 0.95);
         }
 
         .ts-chip.selected:hover {
-          background: linear-gradient(135deg, rgba(180, 255, 50, 0.35) 0%, rgba(150, 220, 40, 0.35) 100%);
-          box-shadow: 0 0 16px rgba(180, 255, 50, 0.4);
+          background: rgba(180, 255, 50, 0.18);
+          border-color: rgba(180, 255, 50, 0.65);
         }
 
         .no-results {
