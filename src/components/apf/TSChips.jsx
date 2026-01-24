@@ -49,7 +49,7 @@ const TS_ACTIONS = [
   { label: 'Cross-test', text: 'Performed cross-test using known-good parts where available.' },
 ];
 
-export const getTsTextByLabel = (label) => {
+const getTsTextByLabel = (label) => {
   const action = TS_ACTIONS.find(a => a.label.toLowerCase() === label.toLowerCase());
   return action ? action.text : label;
 };
@@ -133,4 +133,5 @@ const TSChips = React.memo(({ selectedTs, setSelectedTs, tsSearch }) => {
 
 TSChips.displayName = 'TSChips';
 
+export { getTsTextByLabel };
 export default TSChips;
