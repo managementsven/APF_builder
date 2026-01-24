@@ -122,24 +122,72 @@ const PartChips = React.memo(({ partOrder, setPartOrder }) => {
 
   return (
     <div className="space-y-3 p-3 bg-muted/30 rounded-lg border border-border">
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+      <div className="flex flex-wrap gap-2">
         {PARTS_LIST.map(partName => {
           const isSelected = !!knownParts[partName];
           const qty = knownParts[partName]?.qty || 0;
           return (
-            <Button
+            <button
               key={partName}
-              variant={isSelected ? "default" : "outline"}
-              size="sm"
               onClick={() => togglePart(partName)}
-              className="justify-between text-xs h-8"
+              className={`part-chip ${isSelected ? 'part-selected' : 'part-unselected'}`}
             >
-              <span>{partName}</span>
-              {isSelected && qty > 1 && <span className="ml-1 text-[10px] opacity-80">x{qty}</span>}
-            </Button>
+              <span className="part-name">{partName}</span>
+              {isSelected && qty > 1 && <span className="part-qty">x{qty}</span>}
+            </button>
           );
         })}
       </div>
+      
+      <style jsx>{`
+        .part-chip {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+          min-width: 120px;
+          min-height: 40px;
+          padding: 8px 12px;
+          border-radius: 6px;
+          border: 1px solid hsl(var(--border));
+          font-size: 12px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.15s;
+          box-sizing: border-box;
+          white-space: normal;
+          overflow-wrap: anywhere;
+          word-break: break-word;
+          line-height: 1.2;
+          text-align: center;
+        }
+
+        .part-chip:hover {
+          background: hsl(var(--muted) / 0.5);
+        }
+
+        .part-selected {
+          background: hsl(var(--primary));
+          color: hsl(var(--primary-foreground));
+          border-color: hsl(var(--primary));
+        }
+
+        .part-unselected {
+          background: hsl(var(--background));
+          color: hsl(var(--foreground));
+        }
+
+        .part-name {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .part-qty {
+          font-size: 10px;
+          opacity: 0.8;
+          white-space: nowrap;
+        }
+      `}</style>
 
       {selectedParts.length > 0 && (
         <>

@@ -99,28 +99,83 @@ const TSChips = React.memo(({ selectedTs, setSelectedTs, tsSearch }) => {
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[400px] overflow-y-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[400px] overflow-y-auto pr-2" style={{ scrollbarGutter: 'stable' }}>
         {filtered.map(action => {
           const isSelected = selectedTs.has(action.label);
           return (
-            <Button
+            <button
               key={action.label}
-              variant={isSelected ? "default" : "outline"}
-              size="sm"
               onClick={() => toggleTs(action.label)}
               onDoubleClick={() => {
                 if (isSelected) toggleTs(action.label);
               }}
-              className="justify-start h-auto py-2 text-left"
+              className={`ts-option-card ${isSelected ? 'ts-selected' : 'ts-unselected'}`}
             >
-              <div className="flex flex-col items-start gap-1 w-full">
-                <span className="text-xs font-medium">{action.label}</span>
-                <span className="text-[10px] opacity-70 line-clamp-2">{action.text}</span>
-              </div>
-            </Button>
+              <div className="ts-option-title">{action.label}</div>
+              <div className="ts-option-desc">{action.text}</div>
+            </button>
           );
         })}
       </div>
+      
+      <style jsx>{`
+        .ts-option-card {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+          min-height: 72px;
+          padding: 10px 12px;
+          border-radius: 8px;
+          border: 1px solid hsl(var(--border));
+          background: hsl(var(--background));
+          cursor: pointer;
+          transition: all 0.15s;
+          text-align: left;
+          width: 100%;
+          box-sizing: border-box;
+        }
+
+        .ts-option-card:hover {
+          background: hsl(var(--muted) / 0.5);
+        }
+
+        .ts-selected {
+          background: hsl(var(--primary));
+          color: hsl(var(--primary-foreground));
+          border-color: hsl(var(--primary));
+        }
+
+        .ts-unselected {
+          background: hsl(var(--background));
+          color: hsl(var(--foreground));
+        }
+
+        .ts-option-title {
+          font-size: 12px;
+          font-weight: 600;
+          line-height: 1.3;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          word-break: break-word;
+        }
+
+        .ts-option-desc {
+          font-size: 10px;
+          line-height: 1.35;
+          opacity: 0.75;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          word-break: break-word;
+        }
+
+        .ts-selected .ts-option-desc {
+          opacity: 0.85;
+        }
+      `}</style>
 
       {filtered.length === 0 && (
         <div className="text-center text-xs text-muted-foreground py-4">
