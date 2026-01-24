@@ -1,166 +1,201 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { X, Plus, Minus } from 'lucide-react';
 
-const PARTS = [
-  { key: 'mb_planar', label: 'MB/PLANAR' },
-  { key: 'ram', label: 'RAM', promptQty: true },
-  { key: 'ssd', label: 'SSD', promptQty: true },
-  { key: 'speaker', label: 'SPEAKER' },
-  { key: 'c_cover', label: 'C-COVER' },
-  { key: 'a_cover', label: 'A-COVER' },
-  { key: 'b_cover', label: 'B-COVER' },
-  { key: 'd_cover', label: 'D-COVER' },
-  { key: 'edp_cable', label: 'EDP-CABLE' },
-  { key: 'speaker_cable', label: 'SPK-CABLE' },
-  { key: 'subboard', label: 'SUBBOARD' },
-  { key: 'dc_in', label: 'DC-IN' },
-  { key: 'cmos', label: 'CMOS' },
-  { key: 'battery', label: 'BATTERY' },
-  { key: 'lcd', label: 'LCD' },
-  { key: 'lcd_cable', label: 'LCD-CABLE' },
-  { key: 'tp', label: 'TP' },
-  { key: 'tp_cable', label: 'TP-CABLE' },
-  { key: 'keyboard', label: 'KEYBOARD' },
-  { key: 'c_cover_keyboard', label: 'C-CVR+KB' },
-  { key: 'psu', label: 'PSU' },
-  { key: 'dock', label: 'DOCK' },
+const PARTS_LIST = [
+  'MB/Planar',
+  'RAM',
+  'SSD',
+  'Speaker',
+  'C-Cover',
+  'A-Cover',
+  'B-Cover',
+  'D-Cover',
+  'EDP-Cable',
+  'Speaker-Cable',
+  'Subboard',
+  'DC-IN',
+  'CMOS',
+  'Battery',
+  'LCD',
+  'LCD-Cable',
+  'TP',
+  'TP-Cable',
+  'Keyboard',
+  'C-Cover+Keyboard',
+  'PSU',
+  'DOCK',
 ];
 
-export default function PartChips({ partOrder, setPartOrder, denseMode }) {
-  const parsePartOrder = () => {
-    const map = {};
-    const lines = partOrder.split('\n').filter(line => line.trim());
-    lines.forEach(line => {
-      const match = line.match(/^(.+?)\s+x\s+(\d+)\s+-/);
+const parsePartOrder = (partOrder) => {
+  const lines = partOrder.split('\n');
+  const knownParts = {};
+  const unknownLines = [];
+
+  lines.forEach(line => {
+    const trimmed = line.trim();
+    if (!trimmed) return;
+
+    let matched = false;
+    for (const partName of PARTS_LIST) {
+      const regex = new RegExp(`^${partName.replace(/[+/]/g, '\\$&')}(\\s+x\\s+(\\d+))?(\\s+-\\s*(.*))?$`, 'i');
+      const match = trimmed.match(regex);
       if (match) {
-        const label = match[1].trim();
-        const qty = parseInt(match[2], 10);
-        const part = PARTS.find(p => p.label.toLowerCase() === label.toLowerCase());
-        if (part) {
-          map[part.key] = { label: part.label, qty };
+        const qty = parseInt(match[2] || '1', 10);
+        const details = (match[4] || '').trim();
+        if (!knownParts[partName]) {
+          knownParts[partName] = { qty: 0, details: '' };
         }
-      }
-    });
-    return map;
-  };
-
-  const updatePartOrder = (map) => {
-    const lines = PARTS
-      .filter(part => map[part.key])
-      .map(part => {
-        const { label, qty } = map[part.key];
-        return `${label} x ${qty} -`;
-      });
-    setPartOrder(lines.join('\n'));
-  };
-
-  const handleChipClick = (part) => {
-    const map = parsePartOrder();
-    
-    if (map[part.key]) {
-      if (part.promptQty) {
-        const currentQty = map[part.key].qty;
-        const newQty = prompt(`ENTER QUANTITY FOR ${part.label}:`, currentQty);
-        if (newQty !== null) {
-          const qty = parseInt(newQty, 10);
-          if (qty > 0) {
-            map[part.key] = { label: part.label, qty };
-          } else {
-            delete map[part.key];
-          }
+        knownParts[partName].qty += qty;
+        if (!knownParts[partName].details && details) {
+          knownParts[partName].details = details;
         }
+        matched = true;
+        break;
       }
+    }
+
+    if (!matched) {
+      unknownLines.push(line);
+    }
+  });
+
+  return { knownParts, unknownLines };
+};
+
+const buildPartOrder = (knownParts, unknownLines) => {
+  const lines = [];
+  for (const partName of PARTS_LIST) {
+    const part = knownParts[partName];
+    if (part && part.qty > 0) {
+      const qtyStr = part.qty > 1 ? ` x ${part.qty}` : '';
+      const detailsStr = part.details ? ` - ${part.details}` : ' -';
+      lines.push(`${partName}${qtyStr}${detailsStr}`);
+    }
+  }
+  unknownLines.forEach(line => {
+    if (line.trim()) lines.push(line);
+  });
+  return lines.join('\n');
+};
+
+const PartChips = React.memo(({ partOrder, setPartOrder }) => {
+  const { knownParts, unknownLines } = useMemo(() => parsePartOrder(partOrder), [partOrder]);
+
+  const togglePart = (partName) => {
+    const updated = { ...knownParts };
+    if (updated[partName]) {
+      delete updated[partName];
     } else {
-      if (part.promptQty) {
-        const qty = prompt(`ENTER QUANTITY FOR ${part.label}:`, '1');
-        if (qty !== null) {
-          const qtyNum = parseInt(qty, 10);
-          if (qtyNum > 0) {
-            map[part.key] = { label: part.label, qty: qtyNum };
-          }
-        }
-      } else {
-        map[part.key] = { label: part.label, qty: 1 };
-      }
+      updated[partName] = { qty: 1, details: '' };
     }
-    
-    updatePartOrder(map);
+    setPartOrder(buildPartOrder(updated, unknownLines));
   };
 
-  const handleChipDoubleClick = (part) => {
-    const map = parsePartOrder();
-    if (map[part.key]) {
-      delete map[part.key];
-      updatePartOrder(map);
-    }
+  const updateQty = (partName, delta) => {
+    const updated = { ...knownParts };
+    if (!updated[partName]) return;
+    updated[partName].qty = Math.max(1, updated[partName].qty + delta);
+    setPartOrder(buildPartOrder(updated, unknownLines));
   };
 
-  const isSelected = (partKey) => {
-    const map = parsePartOrder();
-    return !!map[partKey];
+  const updateDetails = (partName, details) => {
+    const updated = { ...knownParts };
+    if (!updated[partName]) return;
+    updated[partName].details = details;
+    setPartOrder(buildPartOrder(updated, unknownLines));
   };
+
+  const removePart = (partName) => {
+    const updated = { ...knownParts };
+    delete updated[partName];
+    setPartOrder(buildPartOrder(updated, unknownLines));
+  };
+
+  const clearAll = () => {
+    setPartOrder(unknownLines.join('\n'));
+  };
+
+  const selectedParts = Object.keys(knownParts);
 
   return (
-    <div className="part-chips-container">
-      <div className="part-chips-grid">
-        {PARTS.map(part => (
-          <Button
-            key={part.key}
-            variant="outline"
-            size="sm"
-            onClick={() => handleChipClick(part)}
-            onDoubleClick={() => handleChipDoubleClick(part)}
-            className={`part-chip ${isSelected(part.key) ? 'selected' : ''}`}
-          >
-            {part.label}
-          </Button>
-        ))}
+    <div className="space-y-3 p-3 bg-muted/30 rounded-lg border border-border">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+        {PARTS_LIST.map(partName => {
+          const isSelected = !!knownParts[partName];
+          const qty = knownParts[partName]?.qty || 0;
+          return (
+            <Button
+              key={partName}
+              variant={isSelected ? "default" : "outline"}
+              size="sm"
+              onClick={() => togglePart(partName)}
+              className="justify-between text-xs h-8"
+            >
+              <span>{partName}</span>
+              {isSelected && qty > 1 && <span className="ml-1 text-[10px] opacity-80">x{qty}</span>}
+            </Button>
+          );
+        })}
       </div>
 
-      <style jsx>{`
-        .part-chips-container {
-          margin-top: 8px;
-          padding: 10px;
-          background: rgba(8, 12, 18, 0.7);
-          border: 1px solid rgba(100, 150, 200, 0.18);
-        }
-
-        .part-chips-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-          gap: 6px;
-        }
-
-        .part-chip {
-          background: rgba(25, 30, 38, 0.8);
-          border: 1px solid rgba(100, 150, 200, 0.25);
-          color: rgba(100, 200, 255, 0.7);
-          font-size: 8px;
-          font-weight: 600;
-          letter-spacing: 0.5px;
-          height: 26px;
-          padding: 0 8px;
-          transition: all 0.12s;
-          text-transform: uppercase;
-        }
-
-        .part-chip:hover {
-          background: rgba(25, 30, 38, 1);
-          border-color: rgba(100, 200, 255, 0.4);
-          color: rgba(100, 200, 255, 0.9);
-        }
-
-        .part-chip.selected {
-          background: rgba(180, 255, 50, 0.12);
-          border-color: rgba(180, 255, 50, 0.5);
-          color: rgba(180, 255, 50, 0.95);
-        }
-
-        .part-chip.selected:hover {
-          background: rgba(180, 255, 50, 0.18);
-          border-color: rgba(180, 255, 50, 0.65);
-        }
-      `}</style>
+      {selectedParts.length > 0 && (
+        <>
+          <div className="flex justify-between items-center">
+            <Label className="text-xs font-semibold">Selected Parts Editor</Label>
+            <Button variant="outline" size="sm" onClick={clearAll} className="h-7 text-xs">
+              Clear All
+            </Button>
+          </div>
+          <div className="space-y-2">
+            {selectedParts.map(partName => {
+              const part = knownParts[partName];
+              return (
+                <div key={partName} className="flex items-center gap-2 p-2 bg-background rounded border border-border">
+                  <span className="text-xs font-medium min-w-[100px]">{partName}</span>
+                  <div className="flex items-center gap-1">
+                    <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => updateQty(partName, -1)}>
+                      <Minus className="w-3 h-3" />
+                    </Button>
+                    <Input
+                      type="number"
+                      min="1"
+                      value={part.qty}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value, 10);
+                        if (val >= 1) {
+                          const updated = { ...knownParts };
+                          updated[partName].qty = val;
+                          setPartOrder(buildPartOrder(updated, unknownLines));
+                        }
+                      }}
+                      className="h-7 w-16 text-center text-xs"
+                    />
+                    <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => updateQty(partName, 1)}>
+                      <Plus className="w-3 h-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="FRU / Part No"
+                    value={part.details}
+                    onChange={(e) => updateDetails(partName, e.target.value)}
+                    className="h-7 flex-1 text-xs"
+                  />
+                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removePart(partName)}>
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
     </div>
   );
-}
+});
+
+PartChips.displayName = 'PartChips';
+
+export default PartChips;
