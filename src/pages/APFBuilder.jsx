@@ -10,8 +10,8 @@ import { GeneralSection } from "../components/apf/sections/GeneralSection";
 import { SymptomSection } from "../components/apf/sections/SymptomSection";
 import { TroubleshootingSection } from "../components/apf/sections/TroubleshootingSection";
 import { PremierSection } from "../components/apf/sections/PremierSection";
-import { useAPFForm } from "../hooks/useAPFForm";
-import { buildApfOutput, buildPremierOutput, buildEscalationOutput } from "../utils/apfGenerators";
+import { useAPFForm } from "../components/hooks/useAPFForm";
+import { buildApfOutput, buildPremierOutput, buildEscalationOutput } from "../components/utils/apfGenerators";
 import { toast } from 'sonner';
 
 export default function APFBuilder() {
